@@ -267,8 +267,9 @@ export default function FunnelEditorPage() {
                       Delete
                     </button>
                   </div>
-                )
-              })}
+                </div>
+              )
+            })}
             </div>
 
             <button
