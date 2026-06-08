@@ -46,10 +46,13 @@ export function QuizRenderer({
   // Initialize
   useEffect(() => {
     setFunnelId(funnel.id)
-    if (!currentStepId && funnel.startStepId) {
-      setCurrentStep(funnel.startStepId)
+    if (!currentStepId) {
+      const startId = funnel.startStepId || funnel.steps[0]?.id
+      if (startId) {
+        setCurrentStep(startId)
+      }
     }
-  }, [funnel.id, funnel.startStepId, currentStepId, setFunnelId, setCurrentStep])
+  }, [funnel.id, funnel.steps, currentStepId, setFunnelId, setCurrentStep])
 
   // Get current step
   const currentStep = funnel.steps.find((s) => s.id === currentStepId)
