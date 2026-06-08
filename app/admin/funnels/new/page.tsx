@@ -80,9 +80,10 @@ export default function NewFunnelPage() {
         )
       }
     } catch (err) {
-      console.error('Error creating funnel:', err)
+      const errorMsg = err instanceof Error ? err.message : String(err)
+      console.error('Error creating funnel:', errorMsg)
       setError(
-        'Error: Supabase connection failed. Please verify your environment variables and Supabase database is set up. See SETUP.md for instructions.'
+        `Error: ${errorMsg}`
       )
     } finally {
       setLoading(false)
