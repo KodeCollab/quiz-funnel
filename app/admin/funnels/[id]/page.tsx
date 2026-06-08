@@ -7,7 +7,6 @@ import { getAllFunnels, updateFunnel, deleteFunnel } from '@/lib/supabase/querie
 import { FunnelConfig, QuizStep } from '@/lib/quiz-engine/types'
 import StepEditor from '@/components/StepEditor'
 import QuizPreviewPanel from '@/components/QuizPreviewPanel'
-import StepPreview from '@/components/StepPreview'
 
 export default function FunnelEditorPage() {
   const params = useParams()
@@ -174,22 +173,13 @@ export default function FunnelEditorPage() {
           <h1 className="text-3xl font-bold text-gray-900">{funnel.name}</h1>
           <p className="text-gray-600 mt-3 text-lg">/quiz/{funnel.slug}</p>
         </div>
-        <div className="flex gap-3">
-          <Link
-            href={`/quiz/${funnel.slug}`}
-            target="_blank"
-            className="px-8 py-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 text-lg"
-          >
-            Open Quiz →
-          </Link>
-          <button
-            onClick={handleDeleteFunnel}
-            disabled={saving}
-            className="px-8 py-4 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 text-lg disabled:opacity-50"
-          >
-            Delete Quiz
-          </button>
-        </div>
+        <Link
+          href={`/quiz/${funnel.slug}`}
+          target="_blank"
+          className="px-8 py-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 text-lg"
+        >
+          Open Quiz →
+        </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -205,10 +195,10 @@ export default function FunnelEditorPage() {
                   onDragOver={handleDragOver}
                   onDrop={() => handleDrop(idx)}
                   onClick={() => setPreviewingStep(step)}
-                  className={`p-6 border rounded-lg transition-colors flex gap-4 ${
+                  className={`p-6 border rounded-lg transition-all flex gap-4 ${
                     draggedIndex === idx
-                      ? 'opacity-50 border-orange-400 bg-orange-50'
-                      : 'border-gray-200 hover:border-orange-500 hover:bg-gray-50 cursor-pointer'
+                      ? 'opacity-70 border-orange-500 bg-orange-100 shadow-lg scale-105'
+                      : 'border-gray-200 hover:border-orange-500 hover:bg-gray-50 cursor-pointer shadow'
                   }`}
                 >
                   {/* Hamburger drag handle */}
@@ -285,6 +275,8 @@ export default function FunnelEditorPage() {
         <div>
           <QuizPreviewPanel
             funnel={funnel}
+            previewingStep={previewingStep}
+            onCloseStepPreview={() => setPreviewingStep(null)}
             onDelete={handleDeleteFunnel}
             onRestart={() => {
               setPreviewingStep(null)
@@ -302,13 +294,16 @@ export default function FunnelEditorPage() {
         />
       )}
 
-      {/* Step Preview Modal */}
-      {previewingStep && (
-        <StepPreview
-          step={previewingStep}
-          onClose={() => setPreviewingStep(null)}
-        />
-      )}
+      {/* Delete Quiz Button - Bottom */}
+      <div className="mt-16 pt-8 border-t border-gray-200">
+        <button
+          onClick={handleDeleteFunnel}
+          disabled={saving}
+          className="w-full px-8 py-4 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 text-lg disabled:opacity-50 transition-colors"
+        >
+          Delete Quiz
+        </button>
+      </div>
     </div>
   )
 }
