@@ -51,8 +51,8 @@ export default function StepPreview({ step, onClose }: StepPreviewProps) {
             </div>
           )}
 
-          {/* Multiple Select Preview */}
-          {step.type === 'multiple_select' && step.answers && (
+          {/* Multi Select Preview */}
+          {(step.type === 'multi_select' || step.type === 'multiple_select') && step.answers && (
             <div className="space-y-4">
               {step.answers.map((answer) => (
                 <button

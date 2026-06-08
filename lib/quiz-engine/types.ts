@@ -6,6 +6,7 @@ export type StepType =
   | 'image_select'
   | 'single_select'
   | 'multi_select'
+  | 'multiple_select'
   | 'text_input'
   | 'textarea'
   | 'email_capture'
