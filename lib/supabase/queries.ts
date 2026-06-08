@@ -12,11 +12,12 @@ export async function getFunnelBySlug(slug: string): Promise<FunnelConfig | null
 
   if (error) return null
 
+  const { id: _configId, ...configRest } = data.config
   return {
     id: data.id,
     slug: data.slug,
     name: data.name,
-    ...data.config,
+    ...configRest,
   }
 }
 
@@ -29,12 +30,15 @@ export async function getAllFunnels(): Promise<FunnelConfig[]> {
 
   if (error) return []
 
-  return data.map((f) => ({
-    id: f.id,
-    slug: f.slug,
-    name: f.name,
-    ...f.config,
-  }))
+  return data.map((f) => {
+    const { id: _configId, ...configRest } = f.config
+    return {
+      id: f.id,
+      slug: f.slug,
+      name: f.name,
+      ...configRest,
+    }
+  })
 }
 
 export async function createSubmission(
