@@ -3,13 +3,17 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
-import { getAllFunnels } from '@/lib/supabase/queries'
-import { FunnelConfig } from '@/lib/quiz-engine/types'
+import { getAllFunnels, updateFunnel } from '@/lib/supabase/queries'
+import { FunnelConfig, QuizStep } from '@/lib/quiz-engine/types'
+import StepEditor from '@/components/StepEditor'
+import QuizPreviewPanel from '@/components/QuizPreviewPanel'
 
 export default function FunnelEditorPage() {
   const params = useParams()
   const [funnel, setFunnel] = useState<FunnelConfig | null>(null)
+  const [editingStep, setEditingStep] = useState<QuizStep | null>(null)
   const [loading, setLoading] = useState(true)
+  const [saving, setSaving] = useState(false)
 
   useEffect(() => {
     const loadFunnel = async () => {
@@ -24,9 +28,26 @@ export default function FunnelEditorPage() {
     }
   }, [params.id])
 
+  const handleSaveStep = async (updatedStep: QuizStep) => {
+    if (!funnel) return
+    setSaving(true)
+
+    const updatedFunnel = {
+      ...funnel,
+      steps: funnel.steps.map((s) => (s.id === updatedStep.id ? updatedStep : s)),
+    }
+
+    const success = await updateFunnel(funnel.id, updatedFunnel)
+    if (success) {
+      setFunnel(updatedFunnel)
+    }
+    setSaving(false)
+    setEditingStep(null)
+  }
+
   if (loading) {
     return (
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-6">
         <div className="text-center text-gray-500">Loading...</div>
       </div>
     )
@@ -34,7 +55,7 @@ export default function FunnelEditorPage() {
 
   if (!funnel) {
     return (
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-6">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
             Funnel Not Found
@@ -51,7 +72,7 @@ export default function FunnelEditorPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-8">
+    <div className="max-w-7xl mx-auto p-8">
       <div className="mb-12">
         <Link href="/admin" className="text-orange-500 hover:underline">
           ← Back to Dashboard
@@ -69,7 +90,7 @@ export default function FunnelEditorPage() {
             target="_blank"
             className="px-8 py-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 text-lg"
           >
-            Preview Quiz →
+            Open Quiz →
           </Link>
         </div>
       </div>
@@ -89,12 +110,21 @@ export default function FunnelEditorPage() {
                   <div className="flex justify-between items-start">
                     <div className="flex-1">
                       <div className="text-sm text-gray-500 mb-2">Step {idx + 1}</div>
-                      <h3 className="font-bold text-gray-900 mb-3 text-lg">{step.question}</h3>
+                      <h3 className="font-bold text-gray-900 mb-3 text-lg">
+                        {step.question}
+                      </h3>
                       <p className="text-sm text-gray-600">
-                        Type: <span className="font-mono bg-gray-100 px-2 py-1 rounded">{step.type}</span>
+                        Type:{' '}
+                        <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+                          {step.type}
+                        </span>
                       </p>
                     </div>
-                    <button className="text-orange-500 hover:underline font-bold text-lg">
+                    <button
+                      onClick={() => setEditingStep(step)}
+                      disabled={saving}
+                      className="text-orange-500 hover:underline font-bold text-lg disabled:opacity-50"
+                    >
                       Edit
                     </button>
                   </div>
@@ -108,72 +138,20 @@ export default function FunnelEditorPage() {
           </div>
         </div>
 
-        {/* Right: Settings */}
-        <div className="space-y-8">
-          <div className="bg-white rounded-lg shadow p-8">
-            <h3 className="font-bold text-gray-900 mb-6 text-lg">Theme</h3>
-            <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-bold text-gray-900 mb-3">
-                  Primary Color
-                </label>
-                <input
-                  type="color"
-                  value={funnel.theme?.primaryColor || '#FF9332'}
-                  className="w-full h-14 rounded cursor-pointer"
-                  disabled
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-gray-900 mb-3">
-                  Background Color
-                </label>
-                <input
-                  type="color"
-                  value={funnel.theme?.backgroundColor || '#FFFFFF'}
-                  className="w-full h-14 rounded cursor-pointer"
-                  disabled
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-8">
-            <h3 className="font-bold text-gray-900 mb-6 text-lg">Status</h3>
-            <div className="flex items-center gap-4">
-              <div className="w-4 h-4 rounded-full bg-green-500"></div>
-              <span className="font-bold text-green-700 text-lg">Active</span>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-lg shadow p-8">
-            <h3 className="font-bold text-gray-900 mb-6 text-lg">Quick Links</h3>
-            <div className="space-y-4">
-              <Link
-                href={`/admin/funnels/${funnel.id}/submissions`}
-                className="block p-5 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold text-gray-900 transition-colors text-center text-lg"
-              >
-                📊 View Submissions
-              </Link>
-              <button className="w-full p-5 bg-gray-100 hover:bg-gray-200 rounded-lg font-bold text-gray-900 transition-colors text-lg">
-                ⚙️ Integrations
-              </button>
-            </div>
-          </div>
+        {/* Right: Preview */}
+        <div>
+          <QuizPreviewPanel funnel={funnel} />
         </div>
       </div>
 
-      <div className="mt-10 p-8 bg-yellow-50 border border-yellow-200 rounded-lg">
-        <h3 className="font-bold text-yellow-900 mb-4 text-lg">⚠️ Edit Feature Coming Soon</h3>
-        <p className="text-base text-yellow-800 mb-4">
-          Full step editor is coming next. For now, you can:
-        </p>
-        <ul className="text-base text-yellow-800 ml-6 space-y-3">
-          <li>✓ Preview the quiz by clicking "Preview Quiz"</li>
-          <li>✓ View submissions in the submissions tab</li>
-          <li>✓ Edit steps directly in the database (advanced)</li>
-        </ul>
-      </div>
+      {/* Step Editor Modal */}
+      {editingStep && (
+        <StepEditor
+          step={editingStep}
+          onSave={handleSaveStep}
+          onClose={() => setEditingStep(null)}
+        />
+      )}
     </div>
   )
 }
