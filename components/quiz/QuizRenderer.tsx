@@ -29,6 +29,7 @@ export function QuizRenderer({ funnel }: QuizRendererProps) {
     setCurrentStep,
     setAnswer,
     goNext,
+    reset,
   } = useQuizStore()
 
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -122,8 +123,7 @@ export function QuizRenderer({ funnel }: QuizRendererProps) {
   }
 
   const handleRestart = () => {
-    const store = useQuizStore.getState()
-    store.reset()
+    reset()
     setFunnelId(funnel.id)
     setCurrentStep(funnel.startStepId)
   }
