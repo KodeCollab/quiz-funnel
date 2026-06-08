@@ -202,52 +202,66 @@ export default function FunnelEditorPage() {
               {funnel.steps.map((step, idx) => (
                 <div
                   key={step.id}
-                  draggable
-                  onDragStart={() => handleDragStart(idx)}
                   onDragOver={handleDragOver}
                   onDrop={() => handleDrop(idx)}
                   onClick={() => setPreviewingStep(step)}
-                  className={`p-6 border rounded-lg transition-colors ${
+                  className={`p-6 border rounded-lg transition-colors flex gap-4 ${
                     draggedIndex === idx
-                      ? 'opacity-50 border-orange-400 bg-orange-50 cursor-move'
+                      ? 'opacity-50 border-orange-400 bg-orange-50'
                       : 'border-gray-200 hover:border-orange-500 hover:bg-gray-50 cursor-pointer'
                   }`}
                 >
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="text-sm text-gray-500 mb-2">Step {idx + 1}</div>
-                      <h3 className="font-bold text-gray-900 mb-3 text-lg">
-                        {step.question}
-                      </h3>
-                      <p className="text-sm text-gray-600">
-                        Type:{' '}
-                        <span className="font-mono bg-gray-100 px-2 py-1 rounded">
-                          {step.type}
-                        </span>
-                      </p>
-                    </div>
-                    <div className="flex gap-4">
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          setEditingStep(step)
-                        }}
-                        disabled={saving}
-                        className="text-orange-500 hover:underline font-bold text-lg disabled:opacity-50"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          handleDeleteStep(step.id)
-                        }}
-                        disabled={saving || funnel.steps.length <= 1}
-                        className="text-red-500 hover:underline font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                      >
-                        Delete
-                      </button>
-                    </div>
+                  {/* Hamburger drag handle */}
+                  <div
+                    draggable
+                    onDragStart={() => handleDragStart(idx)}
+                    className="flex items-start pt-1 cursor-grab active:cursor-grabbing hover:text-orange-500 transition-colors"
+                  >
+                    <svg
+                      className="w-6 h-6"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                  </div>
+
+                  {/* Step info */}
+                  <div className="flex-1">
+                    <div className="text-sm text-gray-500 mb-2">Step {idx + 1}</div>
+                    <h3 className="font-bold text-gray-900 mb-3 text-lg">
+                      {step.question}
+                    </h3>
+                    <p className="text-sm text-gray-600">
+                      Type:{' '}
+                      <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+                        {step.type}
+                      </span>
+                    </p>
+                  </div>
+
+                  {/* Action buttons */}
+                  <div className="flex gap-4">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        setEditingStep(step)
+                      }}
+                      disabled={saving}
+                      className="text-orange-500 hover:underline font-bold text-lg disabled:opacity-50 whitespace-nowrap"
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDeleteStep(step.id)
+                      }}
+                      disabled={saving || funnel.steps.length <= 1}
+                      className="text-red-500 hover:underline font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                    >
+                      Delete
+                    </button>
                   </div>
                 </div>
               ))}
@@ -265,7 +279,13 @@ export default function FunnelEditorPage() {
 
         {/* Right: Preview */}
         <div>
-          <QuizPreviewPanel funnel={funnel} />
+          <QuizPreviewPanel
+            funnel={funnel}
+            onDelete={handleDeleteFunnel}
+            onRestart={() => {
+              setPreviewingStep(null)
+            }}
+          />
         </div>
       </div>
 

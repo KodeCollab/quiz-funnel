@@ -7,9 +7,15 @@ import { FunnelConfig } from '@/lib/quiz-engine/types'
 
 interface QuizPreviewPanelProps {
   funnel: FunnelConfig
+  onDelete?: () => void
+  onRestart?: () => void
 }
 
-export default function QuizPreviewPanel({ funnel }: QuizPreviewPanelProps) {
+export default function QuizPreviewPanel({
+  funnel,
+  onDelete,
+  onRestart,
+}: QuizPreviewPanelProps) {
   const reset = useQuizStore((state) => state.reset)
 
   useEffect(() => {
@@ -24,7 +30,13 @@ export default function QuizPreviewPanel({ funnel }: QuizPreviewPanelProps) {
       </div>
       <div className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 min-h-[600px] flex items-center justify-center">
         <div className="w-full max-w-sm">
-          <QuizRenderer funnel={funnel} key={funnel.steps.length} />
+          <QuizRenderer
+            funnel={funnel}
+            key={funnel.steps.length}
+            showPreviewControls={true}
+            onDelete={onDelete}
+            onRestart={onRestart}
+          />
         </div>
       </div>
     </div>
