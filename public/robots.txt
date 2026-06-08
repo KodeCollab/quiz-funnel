@@ -1,0 +1,6 @@
+# Disallow crawling of admin pages
+User-agent: *
+Disallow: /admin
+
+# Allow crawling of public quiz pages
+Allow: /quiz

@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
 
 * {
   margin: 0;
@@ -18,6 +16,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: #f9fafb;
 }
 
 button {
@@ -29,4 +28,257 @@ textarea,
 select {
   font-family: inherit;
   font-size: inherit;
+}
+
+/* Layout centering */
+.max-w-2xl {
+  max-width: 42rem;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.max-w-4xl {
+  max-width: 56rem;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.max-w-6xl {
+  max-width: 72rem;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.mx-auto {
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* Explicit spacing styles */
+.space-y-12 > * + * {
+  margin-top: 3rem;
+}
+
+.space-x-16 > * + * {
+  margin-left: 4rem;
+}
+
+.gap-6 {
+  gap: 1.5rem;
+}
+
+.gap-3 {
+  gap: 0.75rem;
+}
+
+.pt-10 {
+  padding-top: 2.5rem;
+}
+
+.mt-12 {
+  margin-top: 3rem;
+}
+
+.mb-12 {
+  margin-bottom: 3rem;
+}
+
+.mb-3 {
+  margin-bottom: 0.75rem;
+}
+
+.mb-4 {
+  margin-bottom: 1rem;
+}
+
+.mb-5 {
+  margin-bottom: 1.25rem;
+}
+
+.mt-4 {
+  margin-top: 1rem;
+}
+
+.mt-3 {
+  margin-top: 0.75rem;
+}
+
+/* Padding styles */
+.p-8 {
+  padding: 2rem;
+}
+
+.p-10 {
+  padding: 2.5rem;
+}
+
+.p-6 {
+  padding: 1.5rem;
+}
+
+.px-5 {
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.py-4 {
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.px-8 {
+  padding-left: 2rem;
+  padding-right: 2rem;
+}
+
+/* Button styles */
+button[type="submit"].flex-1,
+.bg-orange-500.flex-1 {
+  background-color: #f97316;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  font-size: 1.125rem;
+  transition: background-color 0.2s;
+  flex: 1;
+}
+
+button[type="submit"]:not(.flex-1),
+a.bg-orange-500 {
+  background-color: #f97316;
+  color: white;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  font-size: 1.125rem;
+  transition: background-color 0.2s;
+  width: auto;
+  display: inline-block;
+}
+
+button[type="submit"]:hover,
+.bg-orange-500:hover {
+  background-color: #ea580c;
+}
+
+.bg-gray-200 {
+  background-color: #e5e7eb;
+  color: #111827;
+  padding: 1rem 2rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  font-size: 1.125rem;
+  transition: background-color 0.2s;
+  flex: 1;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bg-gray-200:hover {
+  background-color: #d1d5db;
+}
+
+/* Input styles */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"] {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus {
+  outline: none;
+  border-color: #f97316;
+}
+
+input[type="color"] {
+  border: 3px solid #000000;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  width: 4rem;
+  height: 3.5rem;
+}
+
+/* Card styles */
+.bg-white {
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.bg-blue-50 {
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
+  padding: 2rem;
+  border-radius: 0.5rem;
+}
+
+.bg-gray-50 {
+  background-color: #f9fafb;
+}
+
+/* Text styles */
+.text-sm {
+  font-size: 0.875rem;
+}
+
+.text-base {
+  font-size: 1rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.font-bold {
+  font-weight: 700;
+}
+
+.text-gray-900 {
+  color: #111827;
+}
+
+.text-gray-600 {
+  color: #4b5563;
+}
+
+.text-gray-500 {
+  color: #6b7280;
+}
+
+.text-orange-500 {
+  color: #f97316;
+}
+
+.text-white {
+  color: white;
+}
+
+.text-blue-800 {
+  color: #1e40af;
+}
+
+.text-blue-900 {
+  color: #1e3a8a;
 }

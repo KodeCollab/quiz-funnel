@@ -20,22 +20,22 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Quiz Funnels</h1>
+    <div className="max-w-6xl mx-auto p-8">
+      <div className="flex justify-between items-center mb-12">
+        <h1 className="text-4xl font-bold text-gray-900">Quiz Funnels</h1>
         <Link
           href="/admin/funnels/new"
-          className="px-6 py-3 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600"
+          className="px-8 py-4 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 text-lg"
         >
           + New Funnel
         </Link>
       </div>
 
       {loading ? (
-        <div className="text-center text-gray-500">Loading...</div>
+        <div className="text-center text-gray-600 text-lg py-20">Loading...</div>
       ) : funnels.length === 0 ? (
-        <div className="text-center text-gray-500 py-12">
-          <p className="mb-4">No funnels yet</p>
+        <div className="text-center text-gray-600 py-24">
+          <p className="mb-8 text-xl">No funnels yet</p>
           <Link
             href="/admin/funnels/new"
             className="text-orange-500 font-bold hover:underline"
@@ -48,26 +48,26 @@ export default function AdminDashboard() {
           <table className="w-full">
             <thead className="bg-gray-100">
               <tr>
-                <th className="text-left px-6 py-3 font-bold text-gray-900">
+                <th className="text-left px-6 py-4 font-bold text-gray-900">
                   Name
                 </th>
-                <th className="text-left px-6 py-3 font-bold text-gray-900">
+                <th className="text-left px-6 py-4 font-bold text-gray-900">
                   Slug
                 </th>
-                <th className="text-left px-6 py-3 font-bold text-gray-900">
+                <th className="text-left px-6 py-4 font-bold text-gray-900">
                   Status
                 </th>
-                <th className="text-left px-6 py-3 font-bold text-gray-900">
+                <th className="text-left px-6 py-4 font-bold text-gray-900">
                   Actions
                 </th>
               </tr>
             </thead>
             <tbody>
               {funnels.map((funnel) => (
-                <tr key={funnel.id} className="border-b border-gray-200">
-                  <td className="px-6 py-4 text-gray-900">{funnel.name}</td>
-                  <td className="px-6 py-4 text-gray-600">/{funnel.slug}</td>
-                  <td className="px-6 py-4">
+                <tr key={funnel.id} className="border-b border-gray-200 hover:bg-gray-50">
+                  <td className="px-6 py-5 text-gray-900">{funnel.name}</td>
+                  <td className="px-6 py-5 text-gray-600">/{funnel.slug}</td>
+                  <td className="px-6 py-5">
                     <span
                       className={`px-3 py-1 rounded-full text-sm font-bold ${
                         funnel.active
@@ -78,7 +78,7 @@ export default function AdminDashboard() {
                       {funnel.active ? 'Active' : 'Inactive'}
                     </span>
                   </td>
-                  <td className="px-6 py-4 space-x-4">
+                  <td className="px-6 py-5 space-x-4">
                     <Link
                       href={`/admin/funnels/${funnel.id}`}
                       className="text-orange-500 font-bold hover:underline"
