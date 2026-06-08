@@ -45,6 +45,51 @@ export default function FunnelEditorPage() {
     setEditingStep(null)
   }
 
+  const handleDeleteStep = async (stepId: string) => {
+    if (!funnel || funnel.steps.length <= 1) return
+    if (!confirm('Are you sure you want to delete this step?')) return
+
+    setSaving(true)
+    const updatedFunnel = {
+      ...funnel,
+      steps: funnel.steps.filter((s) => s.id !== stepId),
+    }
+
+    const success = await updateFunnel(funnel.id, updatedFunnel)
+    if (success) {
+      setFunnel(updatedFunnel)
+    }
+    setSaving(false)
+  }
+
+  const handleAddStep = async () => {
+    if (!funnel) return
+    setSaving(true)
+
+    const newStepId = `step${Date.now()}`
+    const newStep: QuizStep = {
+      id: newStepId,
+      type: 'single_select',
+      question: 'New Question',
+      answers: [
+        { label: 'Option 1', value: 'option1', next: 'step2' },
+        { label: 'Option 2', value: 'option2', next: 'step2' },
+      ],
+    }
+
+    const updatedFunnel = {
+      ...funnel,
+      steps: [...funnel.steps, newStep],
+    }
+
+    const success = await updateFunnel(funnel.id, updatedFunnel)
+    if (success) {
+      setFunnel(updatedFunnel)
+      setEditingStep(newStep)
+    }
+    setSaving(false)
+  }
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto p-6">
@@ -120,19 +165,32 @@ export default function FunnelEditorPage() {
                         </span>
                       </p>
                     </div>
-                    <button
-                      onClick={() => setEditingStep(step)}
-                      disabled={saving}
-                      className="text-orange-500 hover:underline font-bold text-lg disabled:opacity-50"
-                    >
-                      Edit
-                    </button>
+                    <div className="flex gap-4">
+                      <button
+                        onClick={() => setEditingStep(step)}
+                        disabled={saving}
+                        className="text-orange-500 hover:underline font-bold text-lg disabled:opacity-50"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => handleDeleteStep(step.id)}
+                        disabled={saving || funnel.steps.length <= 1}
+                        className="text-red-500 hover:underline font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
 
-            <button className="mt-8 w-full py-4 px-8 border-2 border-orange-500 text-orange-500 font-bold rounded-lg hover:bg-orange-50 transition-colors text-lg">
+            <button
+              onClick={handleAddStep}
+              disabled={saving}
+              className="mt-8 w-full py-4 px-8 border-2 border-orange-500 text-orange-500 font-bold rounded-lg hover:bg-orange-50 transition-colors text-lg disabled:opacity-50"
+            >
               + Add Step
             </button>
           </div>

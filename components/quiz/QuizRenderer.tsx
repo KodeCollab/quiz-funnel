@@ -37,10 +37,10 @@ export function QuizRenderer({ funnel }: QuizRendererProps) {
   // Initialize
   useEffect(() => {
     setFunnelId(funnel.id)
-    if (!currentStepId) {
+    if (!currentStepId && funnel.startStepId) {
       setCurrentStep(funnel.startStepId)
     }
-  }, [funnel.id, currentStepId, setFunnelId, setCurrentStep])
+  }, [funnel.id, funnel.startStepId, currentStepId, setFunnelId, setCurrentStep])
 
   // Get current step
   const currentStep = funnel.steps.find((s) => s.id === currentStepId)
@@ -50,7 +50,14 @@ export function QuizRenderer({ funnel }: QuizRendererProps) {
   const progress = visibleSteps.findIndex((s) => s.id === currentStepId) + 1
 
   if (!currentStep) {
-    return null
+    return (
+      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-orange-50 to-white">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Loading quiz...</h1>
+          <p className="text-gray-600">If this persists, please refresh the page.</p>
+        </div>
+      </div>
+    )
   }
 
   const handleStepSubmit = async (value: unknown) => {
@@ -114,9 +121,24 @@ export function QuizRenderer({ funnel }: QuizRendererProps) {
     goNext('results')
   }
 
+  const handleRestart = () => {
+    const store = useQuizStore.getState()
+    store.reset()
+    setFunnelId(funnel.id)
+    setCurrentStep(funnel.startStepId)
+  }
+
   return (
     <div className="w-full">
-      <ProgressBar current={progress} total={visibleSteps.length} />
+      <div className="flex justify-between items-center mb-4 px-4">
+        <ProgressBar current={progress} total={visibleSteps.length} />
+        <button
+          onClick={handleRestart}
+          className="text-sm text-gray-500 hover:text-gray-700 underline ml-4"
+        >
+          Restart
+        </button>
+      </div>
 
       <AnimatePresence mode="wait">
         <QuestionStep key={currentStepId} stepKey={currentStepId}>
