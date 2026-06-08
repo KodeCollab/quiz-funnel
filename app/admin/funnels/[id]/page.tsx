@@ -75,8 +75,8 @@ export default function FunnelEditorPage() {
       type: 'single_select',
       question: 'New Question',
       answers: [
-        { label: 'Option 1', value: 'option1', next: 'step2' },
-        { label: 'Option 2', value: 'option2', next: 'step2' },
+        { label: 'Option 1', value: 'option1' },
+        { label: 'Option 2', value: 'option2' },
       ],
     }
 
@@ -205,10 +205,8 @@ export default function FunnelEditorPage() {
                     onClick={() => setPreviewingStep(step)}
                     className={`p-6 border rounded-lg transition-all flex gap-4 duration-200 ${
                       isBeingDragged
-                        ? 'opacity-70 border-orange-500 bg-orange-100 shadow-lg scale-105'
-                        : isDragOverTarget
-                          ? 'scale-95 opacity-50'
-                          : 'border-gray-200 hover:border-orange-500 hover:bg-gray-50 cursor-pointer shadow'
+                        ? 'opacity-70 border-orange-500 bg-orange-100 shadow-lg'
+                        : 'border-gray-200 hover:border-orange-500 hover:bg-gray-50 cursor-pointer shadow'
                     }`}
                   >
                   {/* Hamburger drag handle */}
@@ -306,11 +304,12 @@ export default function FunnelEditorPage() {
       )}
 
       {/* Delete Quiz Button - Bottom */}
-      <div className="mt-16 pt-8 border-t border-gray-200">
+      <div className="mt-20 pt-12 border-t border-gray-200">
+        <div className="mb-6" />
         <button
           onClick={handleDeleteFunnel}
           disabled={saving}
-          className="px-6 py-3 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 disabled:opacity-50 transition-colors"
+          className="px-8 py-4 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 disabled:opacity-50 transition-colors text-lg shadow-md hover:shadow-lg"
         >
           Delete Quiz
         </button>

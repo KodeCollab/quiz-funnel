@@ -124,7 +124,7 @@ export function QuizRenderer({
       const nextStepId = resolveNextStep(currentStep, value, {
         ...answers,
         [stepId]: value,
-      })
+      }, funnel.steps)
       goNext(nextStepId)
     }
   }

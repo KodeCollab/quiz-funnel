@@ -28,9 +28,19 @@ export function evaluateCondition(
 export function resolveNextStep(
   step: QuizStep,
   answer: unknown,
-  allAnswers: Record<string, unknown>
+  allAnswers: Record<string, unknown>,
+  allSteps?: QuizStep[]
 ): string {
-  if (!step.next) return 'results'
+  if (!step.next) {
+    // Auto-flow to next step in sequence
+    if (allSteps) {
+      const currentIndex = allSteps.findIndex((s) => s.id === step.id)
+      if (currentIndex !== -1 && currentIndex < allSteps.length - 1) {
+        return allSteps[currentIndex + 1].id
+      }
+    }
+    return 'results'
+  }
 
   if (typeof step.next === 'string') {
     return step.next

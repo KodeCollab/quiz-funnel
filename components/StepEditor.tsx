@@ -152,15 +152,6 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
                         placeholder="Value (e.g., yes, no)"
                         className="w-full px-3 py-2 border border-gray-200 rounded text-sm"
                       />
-                      <input
-                        type="text"
-                        value={answer.next}
-                        onChange={(e) =>
-                          handleUpdateAnswer(idx, 'next', e.target.value)
-                        }
-                        placeholder="Next step ID"
-                        className="w-full px-3 py-2 border border-gray-200 rounded text-sm"
-                      />
                     </div>
                   )
                 )}
@@ -168,26 +159,6 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
             </div>
           )}
 
-          {/* Next Step */}
-          {!['single_select', 'multiple_select'].includes(formData.type) && (
-            <div>
-              <label className="block text-sm font-bold text-gray-900 mb-3">
-                Next Step ID
-              </label>
-              <input
-                type="text"
-                value={(formData as any).next || ''}
-                onChange={(e) =>
-                  setFormData({
-                    ...formData,
-                    next: e.target.value,
-                  } as any)
-                }
-                placeholder="Step ID to go to next (or 'end')"
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
-              />
-            </div>
-          )}
         </div>
 
         <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 p-6 flex gap-4">

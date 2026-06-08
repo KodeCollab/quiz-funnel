@@ -3,21 +3,44 @@ import { FunnelConfig, Submission } from '../quiz-engine/types'
 
 export async function getFunnelBySlug(slug: string): Promise<FunnelConfig | null> {
   const supabase = getSupabaseClient()
+  console.log(`[getFunnelBySlug] Looking for slug: ${slug}`)
+
   const { data, error } = await supabase
     .from('funnels')
     .select('id, slug, name, config, active, google_sheets_id, webhook_url')
     .eq('slug', slug)
-    .eq('active', true)
     .single()
 
-  if (error) return null
+  if (error) {
+    console.error(`[getFunnelBySlug] Database error for slug "${slug}":`, error)
+    return null
+  }
 
-  const { id: _configId, ...configRest } = data.config
-  return {
-    id: data.id,
-    slug: data.slug,
-    name: data.name,
-    ...configRest,
+  if (!data) {
+    console.error(`[getFunnelBySlug] No data returned for slug: ${slug}`)
+    return null
+  }
+
+  console.log(`[getFunnelBySlug] Found funnel:`, { id: data.id, slug: data.slug, active: data.active })
+
+  if (!data.active) {
+    console.warn(`[getFunnelBySlug] Funnel is inactive for slug: ${slug}`)
+    return null
+  }
+
+  try {
+    const { id: _configId, ...configRest } = data.config || {}
+    const result: FunnelConfig = {
+      id: data.id,
+      slug: data.slug,
+      name: data.name,
+      ...configRest,
+    }
+    console.log(`[getFunnelBySlug] Returning funnel config with ${result.steps?.length || 0} steps`)
+    return result
+  } catch (err) {
+    console.error(`[getFunnelBySlug] Error processing config:`, err)
+    return null
   }
 }
 
@@ -109,12 +132,21 @@ export async function updateFunnel(
   config: Partial<FunnelConfig>
 ): Promise<boolean> {
   const supabase = getSupabaseClient()
-  const { error } = await supabase
+  console.log(`[updateFunnel] Saving funnel ${funnelId}`, { steps: config.steps?.length || 0 })
+
+  const { error, data } = await supabase
     .from('funnels')
     .update({ config, updated_at: new Date().toISOString() })
     .eq('id', funnelId)
+    .select()
 
-  return !error
+  if (error) {
+    console.error(`[updateFunnel] Save failed for ${funnelId}:`, error)
+    return false
+  }
+
+  console.log(`[updateFunnel] Save successful for ${funnelId}`)
+  return true
 }
 
 export async function createFunnel(config: FunnelConfig): Promise<string | null> {
