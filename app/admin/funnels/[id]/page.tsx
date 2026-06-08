@@ -1,17 +1,20 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { getAllFunnels, updateFunnel } from '@/lib/supabase/queries'
+import { getAllFunnels, updateFunnel, deleteFunnel } from '@/lib/supabase/queries'
 import { FunnelConfig, QuizStep } from '@/lib/quiz-engine/types'
 import StepEditor from '@/components/StepEditor'
 import QuizPreviewPanel from '@/components/QuizPreviewPanel'
+import StepPreview from '@/components/StepPreview'
 
 export default function FunnelEditorPage() {
   const params = useParams()
+  const router = useRouter()
   const [funnel, setFunnel] = useState<FunnelConfig | null>(null)
   const [editingStep, setEditingStep] = useState<QuizStep | null>(null)
+  const [previewingStep, setPreviewingStep] = useState<QuizStep | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
@@ -118,6 +121,20 @@ export default function FunnelEditorPage() {
     setDraggedIndex(null)
   }
 
+  const handleDeleteFunnel = async () => {
+    if (!funnel) return
+    if (!confirm(`Are you sure you want to delete "${funnel.name}"? This cannot be undone.`)) return
+
+    setSaving(true)
+    const success = await deleteFunnel(funnel.id)
+    if (success) {
+      router.push('/admin')
+    } else {
+      setSaving(false)
+      alert('Failed to delete funnel')
+    }
+  }
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto p-6">
@@ -157,7 +174,7 @@ export default function FunnelEditorPage() {
           <h1 className="text-3xl font-bold text-gray-900">{funnel.name}</h1>
           <p className="text-gray-600 mt-3 text-lg">/quiz/{funnel.slug}</p>
         </div>
-        <div className="flex gap-5">
+        <div className="flex gap-3">
           <Link
             href={`/quiz/${funnel.slug}`}
             target="_blank"
@@ -165,6 +182,13 @@ export default function FunnelEditorPage() {
           >
             Open Quiz →
           </Link>
+          <button
+            onClick={handleDeleteFunnel}
+            disabled={saving}
+            className="px-8 py-4 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 text-lg disabled:opacity-50"
+          >
+            Delete Quiz
+          </button>
         </div>
       </div>
 
@@ -182,10 +206,11 @@ export default function FunnelEditorPage() {
                   onDragStart={() => handleDragStart(idx)}
                   onDragOver={handleDragOver}
                   onDrop={() => handleDrop(idx)}
-                  className={`p-6 border rounded-lg transition-colors cursor-move ${
+                  onClick={() => setPreviewingStep(step)}
+                  className={`p-6 border rounded-lg transition-colors ${
                     draggedIndex === idx
-                      ? 'opacity-50 border-orange-400 bg-orange-50'
-                      : 'border-gray-200 hover:border-orange-500 hover:bg-gray-50'
+                      ? 'opacity-50 border-orange-400 bg-orange-50 cursor-move'
+                      : 'border-gray-200 hover:border-orange-500 hover:bg-gray-50 cursor-pointer'
                   }`}
                 >
                   <div className="flex justify-between items-start">
@@ -203,14 +228,20 @@ export default function FunnelEditorPage() {
                     </div>
                     <div className="flex gap-4">
                       <button
-                        onClick={() => setEditingStep(step)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setEditingStep(step)
+                        }}
                         disabled={saving}
                         className="text-orange-500 hover:underline font-bold text-lg disabled:opacity-50"
                       >
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDeleteStep(step.id)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDeleteStep(step.id)
+                        }}
                         disabled={saving || funnel.steps.length <= 1}
                         className="text-red-500 hover:underline font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed"
                       >
@@ -244,6 +275,14 @@ export default function FunnelEditorPage() {
           step={editingStep}
           onSave={handleSaveStep}
           onClose={() => setEditingStep(null)}
+        />
+      )}
+
+      {/* Step Preview Modal */}
+      {previewingStep && (
+        <StepPreview
+          step={previewingStep}
+          onClose={() => setPreviewingStep(null)}
         />
       )}
     </div>

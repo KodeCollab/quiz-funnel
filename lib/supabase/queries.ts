@@ -137,3 +137,13 @@ export async function createFunnel(config: FunnelConfig): Promise<string | null>
 
   return data?.id || null
 }
+
+export async function deleteFunnel(funnelId: string): Promise<boolean> {
+  const supabase = getSupabaseClient()
+  const { error } = await supabase
+    .from('funnels')
+    .delete()
+    .eq('id', funnelId)
+
+  return !error
+}
