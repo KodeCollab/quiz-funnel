@@ -78,7 +78,7 @@ export default function AdminDashboard() {
                       {funnel.active ? 'Active' : 'Inactive'}
                     </span>
                   </td>
-                  <td className="px-6 py-5 space-x-4">
+                  <td className="px-6 py-5 space-x-8">
                     <Link
                       href={`/admin/funnels/${funnel.id}`}
                       className="text-orange-500 font-bold hover:underline"
