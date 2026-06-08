@@ -14,15 +14,16 @@ export default function FunnelEditorPage() {
   const [editingStep, setEditingStep] = useState<QuizStep | null>(null)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
+  const [draggedIndex, setDraggedIndex] = useState<number | null>(null)
+
+  const loadFunnel = async () => {
+    const funnels = await getAllFunnels()
+    const found = funnels.find((f) => f.id === params.id)
+    setFunnel(found || null)
+    setLoading(false)
+  }
 
   useEffect(() => {
-    const loadFunnel = async () => {
-      const funnels = await getAllFunnels()
-      const found = funnels.find((f) => f.id === params.id)
-      setFunnel(found || null)
-      setLoading(false)
-    }
-
     if (params.id) {
       loadFunnel()
     }
@@ -90,6 +91,33 @@ export default function FunnelEditorPage() {
     setSaving(false)
   }
 
+  const handleDragStart = (idx: number) => {
+    setDraggedIndex(idx)
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+  }
+
+  const handleDrop = async (targetIdx: number) => {
+    if (draggedIndex === null || draggedIndex === targetIdx) return
+
+    if (!funnel) return
+
+    const newSteps = [...funnel.steps]
+    const [draggedStep] = newSteps.splice(draggedIndex, 1)
+    newSteps.splice(targetIdx, 0, draggedStep)
+
+    setSaving(true)
+    const updatedFunnel = { ...funnel, steps: newSteps }
+    const success = await updateFunnel(funnel.id, updatedFunnel)
+    if (success) {
+      setFunnel(updatedFunnel)
+    }
+    setSaving(false)
+    setDraggedIndex(null)
+  }
+
   if (loading) {
     return (
       <div className="max-w-7xl mx-auto p-6">
@@ -150,7 +178,15 @@ export default function FunnelEditorPage() {
               {funnel.steps.map((step, idx) => (
                 <div
                   key={step.id}
-                  className="p-6 border border-gray-200 rounded-lg hover:border-orange-500 transition-colors hover:bg-gray-50"
+                  draggable
+                  onDragStart={() => handleDragStart(idx)}
+                  onDragOver={handleDragOver}
+                  onDrop={() => handleDrop(idx)}
+                  className={`p-6 border rounded-lg transition-colors cursor-move ${
+                    draggedIndex === idx
+                      ? 'opacity-50 border-orange-400 bg-orange-50'
+                      : 'border-gray-200 hover:border-orange-500 hover:bg-gray-50'
+                  }`}
                 >
                   <div className="flex justify-between items-start">
                     <div className="flex-1">

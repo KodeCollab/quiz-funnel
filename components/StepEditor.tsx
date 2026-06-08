@@ -17,6 +17,24 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
     onClose()
   }
 
+  const handleAddAnswer = () => {
+    const newAnswers = [...((formData as any).answers || [])]
+    newAnswers.push({ label: '', value: '', next: '' })
+    setFormData({ ...formData, answers: newAnswers } as any)
+  }
+
+  const handleRemoveAnswer = (idx: number) => {
+    const newAnswers = [...((formData as any).answers || [])]
+    newAnswers.splice(idx, 1)
+    setFormData({ ...formData, answers: newAnswers } as any)
+  }
+
+  const handleUpdateAnswer = (idx: number, field: string, value: string) => {
+    const newAnswers = [...((formData as any).answers || [])]
+    newAnswers[idx] = { ...newAnswers[idx], [field]: value }
+    setFormData({ ...formData, answers: newAnswers } as any)
+  }
+
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -89,9 +107,17 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
           {/* Answers (for select types) */}
           {['single_select', 'multiple_select'].includes(formData.type) && (
             <div>
-              <label className="block text-sm font-bold text-gray-900 mb-4">
-                Answers
-              </label>
+              <div className="flex justify-between items-center mb-4">
+                <label className="block text-sm font-bold text-gray-900">
+                  Answers
+                </label>
+                <button
+                  onClick={handleAddAnswer}
+                  className="text-sm px-3 py-1 bg-orange-500 text-white rounded hover:bg-orange-600"
+                >
+                  + Add Answer
+                </button>
+              </div>
               <div className="space-y-4">
                 {(formData as any).answers?.map(
                   (answer: any, idx: number) => (
@@ -99,45 +125,39 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
                       key={idx}
                       className="p-4 border border-gray-200 rounded-lg space-y-3"
                     >
-                      <input
-                        type="text"
-                        value={answer.label}
-                        onChange={(e) => {
-                          const newAnswers = [...(formData as any).answers]
-                          newAnswers[idx].label = e.target.value
-                          setFormData({
-                            ...formData,
-                            answers: newAnswers,
-                          } as any)
-                        }}
-                        placeholder="Answer text"
-                        className="w-full px-3 py-2 border border-gray-200 rounded text-sm"
-                      />
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={answer.label}
+                          onChange={(e) =>
+                            handleUpdateAnswer(idx, 'label', e.target.value)
+                          }
+                          placeholder="Answer text"
+                          className="flex-1 px-3 py-2 border border-gray-200 rounded text-sm"
+                        />
+                        <button
+                          onClick={() => handleRemoveAnswer(idx)}
+                          disabled={(formData as any).answers?.length <= 1}
+                          className="px-3 py-2 text-red-500 hover:bg-red-50 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                          Remove
+                        </button>
+                      </div>
                       <input
                         type="text"
                         value={answer.value}
-                        onChange={(e) => {
-                          const newAnswers = [...(formData as any).answers]
-                          newAnswers[idx].value = e.target.value
-                          setFormData({
-                            ...formData,
-                            answers: newAnswers,
-                          } as any)
-                        }}
+                        onChange={(e) =>
+                          handleUpdateAnswer(idx, 'value', e.target.value)
+                        }
                         placeholder="Value (e.g., yes, no)"
                         className="w-full px-3 py-2 border border-gray-200 rounded text-sm"
                       />
                       <input
                         type="text"
                         value={answer.next}
-                        onChange={(e) => {
-                          const newAnswers = [...(formData as any).answers]
-                          newAnswers[idx].next = e.target.value
-                          setFormData({
-                            ...formData,
-                            answers: newAnswers,
-                          } as any)
-                        }}
+                        onChange={(e) =>
+                          handleUpdateAnswer(idx, 'next', e.target.value)
+                        }
                         placeholder="Next step ID"
                         className="w-full px-3 py-2 border border-gray-200 rounded text-sm"
                       />
