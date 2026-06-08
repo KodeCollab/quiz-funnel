@@ -52,16 +52,18 @@ export function QuizRenderer({
         setCurrentStep(startId)
       }
     }
-  }, [funnel.id, funnel.steps, currentStepId, setFunnelId, setCurrentStep])
+  }, [funnel.id])
 
-  // Get current step
-  const currentStep = funnel.steps.find((s) => s.id === currentStepId)
+  // Get current step - default to first step if empty
+  const effectiveStepId = currentStepId || funnel.steps[0]?.id || ''
+  const currentStep = funnel.steps.find((s) => s.id === effectiveStepId)
   const visibleSteps = funnel.steps.filter(
     (s) => s.type !== 'loading_screen' && s.type !== 'results_page'
   )
   const progress = visibleSteps.findIndex((s) => s.id === currentStepId) + 1
 
   if (!currentStep) {
+    console.error(`[QuizRenderer] Step not found. currentStepId=${currentStepId}, available steps:`, funnel.steps.map(s => s.id))
     return (
       <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-orange-50 to-white">
         <div className="text-center">
@@ -118,7 +120,13 @@ export function QuizRenderer({
       }
 
       setIsSubmitting(false)
-      goNext('loading')
+      const loadingStep = funnel.steps.find((s) => s.type === 'loading_screen')
+      const resultsStep = funnel.steps.find((s) => s.type === 'results_page')
+      const nextStep = loadingStep || resultsStep
+      console.log('[handleStepSubmit] Final step reached. Next:', nextStep?.id)
+      if (nextStep) {
+        goNext(nextStep.id)
+      }
     } else {
       // Move to next step based on branching logic
       const nextStepId = resolveNextStep(currentStep, value, {
@@ -130,7 +138,14 @@ export function QuizRenderer({
   }
 
   const handleLoadingComplete = () => {
-    goNext('results')
+    const resultsStep = funnel.steps.find((s) => s.type === 'results_page')
+    if (resultsStep) {
+      goNext(resultsStep.id)
+    } else {
+      // No results page, stay on last step
+      const lastStep = funnel.steps[funnel.steps.length - 1]
+      goNext(lastStep.id)
+    }
   }
 
   const handleRestart = () => {

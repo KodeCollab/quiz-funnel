@@ -21,7 +21,7 @@ export async function getFunnelBySlug(slug: string): Promise<FunnelConfig | null
     return null
   }
 
-  console.log(`[getFunnelBySlug] Found funnel:`, { id: data.id, slug: data.slug, active: data.active })
+  console.log(`[getFunnelBySlug] Found funnel:`, { id: data.id, slug: data.slug, active: data.active, configSteps: data.config?.steps?.length, firstQ: data.config?.steps?.[0]?.question })
 
   if (!data.active) {
     console.warn(`[getFunnelBySlug] Funnel is inactive for slug: ${slug}`)
@@ -36,7 +36,7 @@ export async function getFunnelBySlug(slug: string): Promise<FunnelConfig | null
       name: data.name,
       ...configRest,
     }
-    console.log(`[getFunnelBySlug] Returning funnel config with ${result.steps?.length || 0} steps`)
+    console.log(`[getFunnelBySlug] Returning funnel config with ${result.steps?.length || 0} steps, first Q: ${result.steps?.[0]?.question}`)
     return result
   } catch (err) {
     console.error(`[getFunnelBySlug] Error processing config:`, err)
@@ -132,7 +132,7 @@ export async function updateFunnel(
   config: Partial<FunnelConfig>
 ): Promise<boolean> {
   const supabase = getSupabaseClient()
-  console.log(`[updateFunnel] Saving funnel ${funnelId}`, { steps: config.steps?.length || 0 })
+  console.log(`[updateFunnel] Saving funnel ${funnelId}`, { steps: config.steps?.length || 0, firstStepQuestion: config.steps?.[0]?.question })
 
   const { error, data } = await supabase
     .from('funnels')
@@ -145,7 +145,7 @@ export async function updateFunnel(
     return false
   }
 
-  console.log(`[updateFunnel] Save successful for ${funnelId}`)
+  console.log(`[updateFunnel] Save successful. Saved config:`, { steps: data?.[0]?.config?.steps?.length, firstStepQuestion: data?.[0]?.config?.steps?.[0]?.question })
   return true
 }
 

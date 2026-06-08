@@ -36,25 +36,64 @@ export function resolveNextStep(
     if (allSteps) {
       const currentIndex = allSteps.findIndex((s) => s.id === step.id)
       if (currentIndex !== -1 && currentIndex < allSteps.length - 1) {
-        return allSteps[currentIndex + 1].id
+        const nextStep = allSteps[currentIndex + 1]
+        console.log(`[resolveNextStep] Auto-flow from ${step.id} to ${nextStep.id}`)
+        return nextStep.id
       }
+      // End of quiz - look for results page or return last step
+      const resultsStep = allSteps.find((s) => s.type === 'results_page')
+      if (resultsStep) {
+        console.log(`[resolveNextStep] End of quiz, returning results page: ${resultsStep.id}`)
+        return resultsStep.id
+      }
+      // No results page, return last step ID as fallback
+      const lastStep = allSteps[allSteps.length - 1]
+      console.log(`[resolveNextStep] No results page found, staying on last step: ${lastStep.id}`)
+      return lastStep.id
     }
-    return 'results'
+    console.log(`[resolveNextStep] No allSteps provided, cannot auto-flow`)
+    return step.id
   }
 
   if (typeof step.next === 'string') {
-    return step.next
+    // Validate that the next step exists
+    if (allSteps && allSteps.find((s) => s.id === step.next)) {
+      console.log(`[resolveNextStep] Direct next: ${step.next}`)
+      return step.next
+    } else {
+      // Next step doesn't exist, auto-flow instead
+      console.warn(`[resolveNextStep] Next step "${step.next}" not found, auto-flowing`)
+      if (allSteps) {
+        const currentIndex = allSteps.findIndex((s) => s.id === step.id)
+        if (currentIndex !== -1 && currentIndex < allSteps.length - 1) {
+          const nextStep = allSteps[currentIndex + 1]
+          console.log(`[resolveNextStep] Auto-flow from ${step.id} to ${nextStep.id}`)
+          return nextStep.id
+        }
+        const lastStep = allSteps[allSteps.length - 1]
+        return lastStep.id
+      }
+      return step.id
+    }
   }
 
   // Conditional branching
   for (const branch of step.next) {
     if (evaluateCondition(branch.condition, answer, allAnswers)) {
+      console.log(`[resolveNextStep] Conditional branch matched: ${branch.next}`)
       return branch.next
     }
   }
 
-  // Fallback
-  return 'results'
+  // Fallback - return last step in allSteps if available
+  if (allSteps && allSteps.length > 0) {
+    const lastStep = allSteps[allSteps.length - 1]
+    console.log(`[resolveNextStep] No condition matched, returning last step: ${lastStep.id}`)
+    return lastStep.id
+  }
+
+  console.log(`[resolveNextStep] No valid next step found, staying on current step: ${step.id}`)
+  return step.id
 }
 
 export function calculateLeadScore(
