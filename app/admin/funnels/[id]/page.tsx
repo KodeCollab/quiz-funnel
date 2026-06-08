@@ -1,17 +1,13 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { getAllFunnels } from '@/lib/supabase/queries'
 import { FunnelConfig } from '@/lib/quiz-engine/types'
 
-interface FunnelEditorPageProps {
-  params: {
-    id: string
-  }
-}
-
-export default function FunnelEditorPage({ params }: FunnelEditorPageProps) {
+export default function FunnelEditorPage() {
+  const params = useParams()
   const [funnel, setFunnel] = useState<FunnelConfig | null>(null)
   const [loading, setLoading] = useState(true)
 
@@ -23,7 +19,9 @@ export default function FunnelEditorPage({ params }: FunnelEditorPageProps) {
       setLoading(false)
     }
 
-    loadFunnel()
+    if (params.id) {
+      loadFunnel()
+    }
   }, [params.id])
 
   if (loading) {
