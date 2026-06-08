@@ -29,11 +29,11 @@ export default function QuizPreviewPanel({
 
   if (previewingStep) {
     return (
-      <div className="sticky top-8 bg-white rounded-lg shadow overflow-hidden">
-        <div className="bg-gray-100 p-4 border-b border-gray-200 flex justify-between items-center">
+      <div className="sticky top-8">
+        <div className="bg-gray-100 p-4 border-b border-gray-200 flex justify-between items-center rounded-t-lg">
           <div>
             <h3 className="font-bold text-gray-900">Step Preview</h3>
-            <p className="text-xs text-gray-600 mt-1">{previewingStep.question}</p>
+            <p className="text-xs text-gray-600 mt-1">Mobile view</p>
           </div>
           <button
             onClick={onCloseStepPreview}
@@ -42,8 +42,17 @@ export default function QuizPreviewPanel({
             ×
           </button>
         </div>
-        <div className="p-6 bg-gradient-to-br from-gray-50 to-gray-100 min-h-[600px]">
-          <div className="space-y-6">
+
+        {/* Mobile Frame */}
+        <div className="bg-white rounded-b-lg shadow-xl overflow-hidden">
+          {/* Phone notch */}
+          <div className="bg-black h-7 flex items-center justify-center text-white text-xs">
+            <span className="ml-auto pr-4">9:41</span>
+          </div>
+
+          {/* Phone content */}
+          <div className="bg-gradient-to-br from-gray-50 to-gray-100 min-h-[600px] p-6">
+            <div className="space-y-6">
             {/* Question */}
             <div>
               <h2 className="text-2xl font-bold text-gray-900 mb-2">
@@ -178,22 +187,18 @@ export default function QuizPreviewPanel({
               </div>
             )}
 
-            {/* Action Buttons */}
-            <div className="flex gap-3 pt-4">
-              <button
-                onClick={onRestart}
-                className="flex-1 px-4 py-2 bg-orange-500 text-white rounded font-bold hover:bg-orange-600"
-              >
-                Restart
-              </button>
-              <button
-                onClick={onDelete}
-                className="flex-1 px-4 py-2 bg-red-500 text-white rounded font-bold hover:bg-red-600"
-              >
-                Delete
-              </button>
             </div>
           </div>
+        </div>
+
+        {/* Restart Button Outside */}
+        <div className="mt-4">
+          <button
+            onClick={onRestart}
+            className="w-full px-4 py-2 bg-orange-500 text-white rounded-lg font-bold hover:bg-orange-600 transition-colors"
+          >
+            Restart Preview
+          </button>
         </div>
       </div>
     )

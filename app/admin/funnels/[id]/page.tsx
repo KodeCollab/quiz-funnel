@@ -189,18 +189,28 @@ export default function FunnelEditorPage() {
             <h2 className="text-2xl font-bold text-gray-900 mb-8">Steps</h2>
 
             <div className="space-y-5">
-              {funnel.steps.map((step, idx) => (
-                <div
-                  key={step.id}
-                  onDragOver={handleDragOver}
-                  onDrop={() => handleDrop(idx)}
-                  onClick={() => setPreviewingStep(step)}
-                  className={`p-6 border rounded-lg transition-all flex gap-4 ${
-                    draggedIndex === idx
-                      ? 'opacity-70 border-orange-500 bg-orange-100 shadow-lg scale-105'
-                      : 'border-gray-200 hover:border-orange-500 hover:bg-gray-50 cursor-pointer shadow'
-                  }`}
-                >
+              {funnel.steps.map((step, idx) => {
+                const isBeingDragged = draggedIndex === idx
+                const isDragOverTarget =
+                  draggedIndex !== null &&
+                  draggedIndex !== idx &&
+                  ((draggedIndex < idx && idx <= draggedIndex + 1) ||
+                    (draggedIndex > idx && idx >= draggedIndex - 1))
+
+                return (
+                  <div
+                    key={step.id}
+                    onDragOver={handleDragOver}
+                    onDrop={() => handleDrop(idx)}
+                    onClick={() => setPreviewingStep(step)}
+                    className={`p-6 border rounded-lg transition-all flex gap-4 duration-200 ${
+                      isBeingDragged
+                        ? 'opacity-70 border-orange-500 bg-orange-100 shadow-lg scale-105'
+                        : isDragOverTarget
+                          ? 'scale-95 opacity-50'
+                          : 'border-gray-200 hover:border-orange-500 hover:bg-gray-50 cursor-pointer shadow'
+                    }`}
+                  >
                   {/* Hamburger drag handle */}
                   <div
                     draggable
@@ -257,8 +267,8 @@ export default function FunnelEditorPage() {
                       Delete
                     </button>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
 
             <button
@@ -299,7 +309,7 @@ export default function FunnelEditorPage() {
         <button
           onClick={handleDeleteFunnel}
           disabled={saving}
-          className="w-full px-8 py-4 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 text-lg disabled:opacity-50 transition-colors"
+          className="px-6 py-3 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 disabled:opacity-50 transition-colors"
         >
           Delete Quiz
         </button>

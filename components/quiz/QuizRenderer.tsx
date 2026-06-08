@@ -143,32 +143,6 @@ export function QuizRenderer({
     <div className="w-full">
       <div className="flex justify-between items-center mb-4 px-4 gap-2">
         <ProgressBar current={progress} total={visibleSteps.length} />
-        <div className="flex gap-2 ml-4">
-          {showPreviewControls && onRestart && (
-            <button
-              onClick={onRestart}
-              className="text-sm px-3 py-1 bg-orange-500 text-white rounded hover:bg-orange-600 whitespace-nowrap"
-            >
-              Restart
-            </button>
-          )}
-          {showPreviewControls && onDelete && (
-            <button
-              onClick={onDelete}
-              className="text-sm px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 whitespace-nowrap"
-            >
-              Delete
-            </button>
-          )}
-          {!showPreviewControls && (
-            <button
-              onClick={handleRestart}
-              className="text-sm text-gray-500 hover:text-gray-700 underline"
-            >
-              Restart
-            </button>
-          )}
-        </div>
       </div>
 
       <AnimatePresence mode="wait">
