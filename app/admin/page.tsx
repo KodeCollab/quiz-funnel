@@ -2,12 +2,13 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { getAllFunnels } from '@/lib/supabase/queries'
+import { getAllFunnels, deleteFunnel } from '@/lib/supabase/queries'
 import { FunnelConfig } from '@/lib/quiz-engine/types'
 
 export default function AdminDashboard() {
   const [funnels, setFunnels] = useState<FunnelConfig[]>([])
   const [loading, setLoading] = useState(true)
+  const [deleting, setDeleting] = useState<string | null>(null)
 
   useEffect(() => {
     loadFunnels()
@@ -17,6 +18,22 @@ export default function AdminDashboard() {
     const data = await getAllFunnels()
     setFunnels(data)
     setLoading(false)
+  }
+
+  const handleDelete = async (funnelId: string, funnelName: string) => {
+    if (!confirm(`Are you sure you want to delete "${funnelName}"? This cannot be undone.`)) {
+      return
+    }
+
+    setDeleting(funnelId)
+    const success = await deleteFunnel(funnelId)
+    setDeleting(null)
+
+    if (success) {
+      setFunnels(funnels.filter((f) => f.id !== funnelId))
+    } else {
+      alert('Failed to delete funnel')
+    }
   }
 
   return (
@@ -78,7 +95,7 @@ export default function AdminDashboard() {
                       {funnel.active ? 'Active' : 'Inactive'}
                     </span>
                   </td>
-                  <td className="px-6 py-5 space-x-8">
+                  <td className="px-6 py-5 space-x-4">
                     <Link
                       href={`/admin/funnels/${funnel.id}`}
                       className="text-orange-500 font-bold hover:underline"
@@ -91,6 +108,13 @@ export default function AdminDashboard() {
                     >
                       Submissions
                     </Link>
+                    <button
+                      onClick={() => handleDelete(funnel.id, funnel.name)}
+                      disabled={deleting === funnel.id}
+                      className="text-red-500 font-bold hover:underline disabled:opacity-50"
+                    >
+                      {deleting === funnel.id ? 'Deleting...' : 'Delete'}
+                    </button>
                   </td>
                 </tr>
               ))}
