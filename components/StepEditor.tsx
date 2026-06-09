@@ -245,6 +245,27 @@ export default function StepEditor({ step, onSave, onClose, allSteps = [] }: Ste
             </div>
           )}
 
+          {/* Duration (for loading screen) */}
+          {formData.type === 'loading_screen' && (
+            <div>
+              <label className="block text-sm font-bold text-gray-900 mt-3 mb-3">
+                Loading Duration (milliseconds)
+              </label>
+              <input
+                type="number"
+                value={(formData as any).duration || 2000}
+                onChange={(e) =>
+                  setFormData({ ...formData, duration: parseInt(e.target.value) || 2000 })
+                }
+                min="500"
+                step="100"
+                placeholder="2000"
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
+              />
+              <p className="text-xs text-gray-500 mt-2">Default: 2000ms (2 seconds)</p>
+            </div>
+          )}
+
         </div>
 
         <div className="sticky bottom-0 bg-gray-50 border-t border-gray-200 p-6 flex gap-4">

@@ -31,8 +31,9 @@ export function resolveNextStep(
   allAnswers: Record<string, unknown>,
   allSteps?: QuizStep[]
 ): string {
-  // First, check if this is a single/multiple select step with answer-level branching
-  if ((step.type === 'single_select' || step.type === 'multiple_select') && step.answers) {
+  // First, check if this is a single select step with answer-level branching
+  // (skip this for multiple_select since the answer is comma-separated)
+  if (step.type === 'single_select' && step.answers) {
     const selectedAnswer = step.answers.find((a) => a.value === answer)
     if (selectedAnswer && selectedAnswer.next) {
       // Validate that the next step exists

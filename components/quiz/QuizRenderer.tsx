@@ -10,6 +10,7 @@ import { appendToGoogleSheet } from '@/lib/integrations/google-sheets'
 import { QuestionStep } from './QuestionStep'
 import { ProgressBar } from './ProgressBar'
 import { SingleSelectStep } from './steps/SingleSelectStep'
+import { MultipleSelectStep } from './steps/MultipleSelectStep'
 import { EmailStep } from './steps/EmailStep'
 import { NameStep } from './steps/NameStep'
 import { PhoneStep } from './steps/PhoneStep'
@@ -208,14 +209,9 @@ export function QuizRenderer({
   }
 
   const handleLoadingComplete = () => {
-    const resultsStep = funnel.steps.find((s) => s.type === 'results_page')
-    if (resultsStep) {
-      goNext(resultsStep.id)
-    } else {
-      // No results page, stay on last step
-      const lastStep = funnel.steps[funnel.steps.length - 1]
-      goNext(lastStep.id)
-    }
+    // Use resolver to determine next step, just like regular step submission
+    const nextStepId = resolveNextStep(currentStep, undefined, answers, funnel.steps)
+    goNext(nextStepId)
   }
 
   const handleRestart = () => {
@@ -238,6 +234,16 @@ export function QuizRenderer({
               answers={currentStep.answers || []}
               selected={answers[currentStepId] as string}
               onSelect={handleStepSubmit}
+            />
+          )}
+
+          {(currentStep.type === 'multiple_select' || currentStep.type === 'multi_select') && (
+            <MultipleSelectStep
+              question={currentStep.question}
+              description={currentStep.description}
+              answers={currentStep.answers || []}
+              selected={(answers[currentStepId] as string)?.split(',').filter(Boolean) || []}
+              onSubmit={handleStepSubmit}
             />
           )}
 
@@ -282,6 +288,7 @@ export function QuizRenderer({
             <LoadingStep
               question={currentStep.question}
               onComplete={handleLoadingComplete}
+              duration={(currentStep as any).duration || 2000}
             />
           )}
 

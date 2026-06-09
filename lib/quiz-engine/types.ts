@@ -53,6 +53,7 @@ export interface QuizStep {
   next?: string | ConditionalNext[]
   ctaText?: string
   ctaLink?: string
+  duration?: number
 }
 
 export interface FunnelTheme {

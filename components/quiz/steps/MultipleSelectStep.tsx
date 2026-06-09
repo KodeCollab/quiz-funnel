@@ -8,7 +8,7 @@ interface MultipleSelectStepProps {
   description?: string
   answers: Answer[]
   selected?: string[]
-  onSubmit: (values: string[]) => void
+  onSubmit: (values: string) => void
 }
 
 export function MultipleSelectStep({
@@ -27,13 +27,13 @@ export function MultipleSelectStep({
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-96 bg-white p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+    <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
       <div className="w-full max-w-full">
-        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
           {question}
         </h1>
         {description && (
-          <p className="text-xl text-gray-600 text-center mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>{description}</p>
+          <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>{description}</p>
         )}
 
         <div className="space-y-4 mt-8 md:mt-12 px-2">
@@ -50,7 +50,7 @@ export function MultipleSelectStep({
         </div>
 
         <button
-          onClick={() => onSubmit(selections)}
+          onClick={() => onSubmit(selections.join(','))}
           disabled={selections.length === 0}
           className="btn-orange-block"
         >
