@@ -80,7 +80,7 @@ export default function QuizPreviewPanel({
       switch (currentStep.type) {
         case 'single_select':
           return (
-            <div className="relative flex flex-col items-center justify-center h-full bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <div className="relative flex flex-col items-center justify-center h-full bg-white px-4 lg:px-12 py-12 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
               <div className="w-full max-w-full">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                   {currentStep.question}

@@ -226,7 +226,16 @@ export function QuizRenderer({
   }
 
   const renderStepContent = () => {
-    const stepWrapperClasses = "w-full h-full flex flex-col items-center justify-center bg-white p-4 md:p-6 antialiased overflow-hidden"
+    const stepWrapperClasses = "relative w-full h-full flex flex-col items-center justify-center bg-white px-4 lg:px-12 py-12 antialiased overflow-hidden"
+
+    const BackButton = () => history.length > 1 ? (
+      <button
+        onClick={goBack}
+        className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
+      >
+        ← Back
+      </button>
+    ) : null
 
     switch (currentStep.type) {
       case 'single_select':
@@ -239,6 +248,7 @@ export function QuizRenderer({
               selected={answers[currentStepId] as string}
               onSelect={handleStepSubmit}
             />
+            <BackButton />
           </div>
         )
 
@@ -253,6 +263,7 @@ export function QuizRenderer({
               selected={(answers[currentStepId] as string)?.split(',').filter(Boolean) || []}
               onSubmit={handleStepSubmit}
             />
+            <BackButton />
           </div>
         )
 
@@ -267,6 +278,7 @@ export function QuizRenderer({
               placeholder={currentStep.placeholder}
               onSubmit={handleStepSubmit}
             />
+            <BackButton />
           </div>
         )
 
@@ -279,6 +291,7 @@ export function QuizRenderer({
               value={answers[currentStepId] as string}
               onSubmit={handleStepSubmit}
             />
+            <BackButton />
           </div>
         )
 
@@ -291,6 +304,7 @@ export function QuizRenderer({
               value={answers[currentStepId] as string}
               onSubmit={handleStepSubmit}
             />
+            <BackButton />
           </div>
         )
 
@@ -303,6 +317,7 @@ export function QuizRenderer({
               value={answers[currentStepId] as string}
               onSubmit={handleStepSubmit}
             />
+            <BackButton />
           </div>
         )
 
@@ -320,6 +335,7 @@ export function QuizRenderer({
               value={answers[currentStepId] as string}
               onSubmit={handleStepSubmit}
             />
+            <BackButton />
           </div>
         )
 
@@ -343,6 +359,7 @@ export function QuizRenderer({
               ctaText={currentStep.ctaText}
               ctaLink={currentStep.ctaLink}
             />
+            <BackButton />
           </div>
         )
 
@@ -359,7 +376,7 @@ export function QuizRenderer({
   }
 
   return (
-    <div className="w-full h-screen flex flex-col overflow-hidden relative">
+    <div className="w-full h-screen flex flex-col overflow-hidden">
       <ProgressBar current={progress} total={visibleSteps.length} />
 
       <div className="flex-1 overflow-x-hidden overflow-y-hidden">
@@ -369,18 +386,6 @@ export function QuizRenderer({
           </QuestionStep>
         </AnimatePresence>
       </div>
-
-      {/* Back Button */}
-      {history.length > 1 && (
-        <div className="absolute bottom-4 left-4 z-10">
-          <button
-            onClick={goBack}
-            className="text-orange-500 hover:underline text-sm font-bold"
-          >
-            ← Back
-          </button>
-        </div>
-      )}
     </div>
   )
 }
