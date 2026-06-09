@@ -226,70 +226,84 @@ export function QuizRenderer({
   }
 
   const renderStepContent = () => {
+    const stepWrapperClasses = "w-full h-full flex flex-col items-center justify-center bg-white p-4 md:p-6 antialiased overflow-hidden"
+
     switch (currentStep.type) {
       case 'single_select':
         return (
-          <SingleSelectStep
-            question={currentStep.question}
-            description={currentStep.description}
-            answers={currentStep.answers || []}
-            selected={answers[currentStepId] as string}
-            onSelect={handleStepSubmit}
-          />
+          <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <SingleSelectStep
+              question={currentStep.question}
+              description={currentStep.description}
+              answers={currentStep.answers || []}
+              selected={answers[currentStepId] as string}
+              onSelect={handleStepSubmit}
+            />
+          </div>
         )
 
       case 'multiple_select':
       case 'multi_select':
         return (
-          <MultipleSelectStep
-            question={currentStep.question}
-            description={currentStep.description}
-            answers={currentStep.answers || []}
-            selected={(answers[currentStepId] as string)?.split(',').filter(Boolean) || []}
-            onSubmit={handleStepSubmit}
-          />
+          <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <MultipleSelectStep
+              question={currentStep.question}
+              description={currentStep.description}
+              answers={currentStep.answers || []}
+              selected={(answers[currentStepId] as string)?.split(',').filter(Boolean) || []}
+              onSubmit={handleStepSubmit}
+            />
+          </div>
         )
 
       case 'text_input':
       case 'textarea':
         return (
-          <TextInputStep
-            question={currentStep.question}
-            description={currentStep.description}
-            value={answers[currentStepId] as string}
-            placeholder={currentStep.placeholder}
-            onSubmit={handleStepSubmit}
-          />
+          <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <TextInputStep
+              question={currentStep.question}
+              description={currentStep.description}
+              value={answers[currentStepId] as string}
+              placeholder={currentStep.placeholder}
+              onSubmit={handleStepSubmit}
+            />
+          </div>
         )
 
       case 'email_capture':
         return (
-          <EmailStep
-            question={currentStep.question}
-            description={currentStep.description}
-            value={answers[currentStepId] as string}
-            onSubmit={handleStepSubmit}
-          />
+          <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <EmailStep
+              question={currentStep.question}
+              description={currentStep.description}
+              value={answers[currentStepId] as string}
+              onSubmit={handleStepSubmit}
+            />
+          </div>
         )
 
       case 'name_capture':
         return (
-          <NameStep
-            question={currentStep.question}
-            description={currentStep.description}
-            value={answers[currentStepId] as string}
-            onSubmit={handleStepSubmit}
-          />
+          <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <NameStep
+              question={currentStep.question}
+              description={currentStep.description}
+              value={answers[currentStepId] as string}
+              onSubmit={handleStepSubmit}
+            />
+          </div>
         )
 
       case 'phone_capture':
         return (
-          <PhoneStep
-            question={currentStep.question}
-            description={currentStep.description}
-            value={answers[currentStepId] as string}
-            onSubmit={handleStepSubmit}
-          />
+          <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <PhoneStep
+              question={currentStep.question}
+              description={currentStep.description}
+              value={answers[currentStepId] as string}
+              onSubmit={handleStepSubmit}
+            />
+          </div>
         )
 
       case 'address_capture':
@@ -298,32 +312,38 @@ export function QuizRenderer({
       case 'housenumber_capture':
       case 'country_capture':
         return (
-          <AddressStep
-            type={currentStep.type as any}
-            question={currentStep.question}
-            description={currentStep.description}
-            value={answers[currentStepId] as string}
-            onSubmit={handleStepSubmit}
-          />
+          <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <AddressStep
+              type={currentStep.type as any}
+              question={currentStep.question}
+              description={currentStep.description}
+              value={answers[currentStepId] as string}
+              onSubmit={handleStepSubmit}
+            />
+          </div>
         )
 
       case 'loading_screen':
         return (
-          <LoadingStep
-            question={currentStep.question}
-            onComplete={handleLoadingComplete}
-            duration={(currentStep as any).duration || 2000}
-          />
+          <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <LoadingStep
+              question={currentStep.question}
+              onComplete={handleLoadingComplete}
+              duration={(currentStep as any).duration || 2000}
+            />
+          </div>
         )
 
       case 'results_page':
         return (
-          <ResultsStep
-            question={currentStep.question}
-            description={currentStep.description}
-            ctaText={currentStep.ctaText}
-            ctaLink={currentStep.ctaLink}
-          />
+          <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <ResultsStep
+              question={currentStep.question}
+              description={currentStep.description}
+              ctaText={currentStep.ctaText}
+              ctaLink={currentStep.ctaLink}
+            />
+          </div>
         )
 
       default:
@@ -339,10 +359,10 @@ export function QuizRenderer({
   }
 
   return (
-    <div className="w-full flex flex-col overflow-x-hidden relative min-h-screen">
+    <div className="w-full h-screen flex flex-col overflow-hidden relative">
       <ProgressBar current={progress} total={visibleSteps.length} />
 
-      <div className="flex-1 overflow-x-hidden">
+      <div className="flex-1 overflow-x-hidden overflow-y-hidden">
         <AnimatePresence mode="wait">
           <QuestionStep key={currentStepId} stepKey={currentStepId}>
             {renderStepContent()}
@@ -352,7 +372,7 @@ export function QuizRenderer({
 
       {/* Back Button */}
       {history.length > 1 && (
-        <div className="absolute bottom-8 left-8">
+        <div className="absolute bottom-4 left-4 z-10">
           <button
             onClick={goBack}
             className="text-orange-500 hover:underline text-sm font-bold"

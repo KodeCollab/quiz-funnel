@@ -80,7 +80,7 @@ export default function QuizPreviewPanel({
       switch (currentStep.type) {
         case 'single_select':
           return (
-            <div className="relative flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <div className="relative flex flex-col items-center justify-center h-full bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
               <div className="w-full max-w-full">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                   {currentStep.question}
@@ -436,7 +436,7 @@ export default function QuizPreviewPanel({
     }
 
     return (
-      <div className="sticky top-8">
+      <div className="sticky top-8 h-[calc(100vh-32px)] flex flex-col">
         <div className="bg-gray-100 p-4 border-b border-gray-200 rounded-t-lg">
           <div>
             <h3 className="font-bold text-gray-900">Step Preview</h3>
@@ -445,20 +445,20 @@ export default function QuizPreviewPanel({
         </div>
 
         {/* Mobile Frame */}
-        <div className="bg-white rounded-b-lg shadow-xl overflow-hidden overflow-x-hidden">
+        <div className="bg-white rounded-b-lg shadow-xl overflow-hidden overflow-x-hidden flex-1 flex flex-col">
           {/* Phone notch */}
-          <div className="bg-black h-7 flex items-center justify-between px-6 py-2 text-white text-xs">
+          <div className="bg-black h-7 flex items-center justify-between px-6 py-2 text-white text-xs flex-shrink-0">
             <span></span>
             <span>9:41</span>
           </div>
 
           {/* Phone content */}
-          <div className="bg-white max-h-[600px] overflow-y-auto overflow-hidden w-full px-4">
+          <div className="bg-white flex-1 overflow-hidden w-full">
             {renderStep()}
           </div>
 
           {/* Progress Bar at Bottom */}
-          <div className="bg-white border-t border-gray-200 p-4">
+          <div className="bg-white border-t border-gray-200 p-4 flex-shrink-0">
             <div className="h-1 bg-gray-200 rounded-full overflow-hidden">
               <div
                 className="h-full bg-orange-500 transition-all duration-300"
@@ -488,7 +488,7 @@ export default function QuizPreviewPanel({
   }
 
   return (
-    <div className="sticky top-8">
+    <div className="sticky top-8 h-[calc(100vh-32px)] flex flex-col">
       <div className="bg-gray-100 p-4 border-b border-gray-200 flex justify-between items-center rounded-t-lg">
         <div>
           <h3 className="font-bold text-gray-900">Live Preview</h3>
@@ -497,15 +497,15 @@ export default function QuizPreviewPanel({
       </div>
 
       {/* Mobile Frame */}
-      <div className="bg-white rounded-b-lg shadow-xl overflow-hidden overflow-x-hidden">
+      <div className="bg-white rounded-b-lg shadow-xl overflow-hidden overflow-x-hidden flex-1 flex flex-col">
         {/* Phone notch */}
-        <div className="bg-black h-7 flex items-center justify-between px-4 text-white text-xs">
+        <div className="bg-black h-7 flex items-center justify-between px-4 text-white text-xs flex-shrink-0">
           <span></span>
           <span>9:41</span>
         </div>
 
         {/* Phone content */}
-        <div className="bg-white max-h-[600px] overflow-y-auto overflow-x-hidden w-full">
+        <div className="bg-white flex-1 overflow-hidden w-full">
           <QuizRenderer
             funnel={funnel}
             key={funnel.steps.length}
