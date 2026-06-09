@@ -37,11 +37,13 @@ export function QuizRenderer({
     answers,
     sessionId,
     submissionId,
+    history,
     setFunnelId,
     setCurrentStep,
     setAnswer,
     setSubmissionId,
     goNext,
+    goBack,
     reset,
   } = useQuizStore()
 
@@ -337,7 +339,7 @@ export function QuizRenderer({
   }
 
   return (
-    <div className="w-full flex flex-col overflow-x-hidden">
+    <div className="w-full flex flex-col overflow-x-hidden relative min-h-screen">
       <ProgressBar current={progress} total={visibleSteps.length} />
 
       <div className="flex-1 overflow-x-hidden">
@@ -347,6 +349,18 @@ export function QuizRenderer({
           </QuestionStep>
         </AnimatePresence>
       </div>
+
+      {/* Back Button */}
+      {history.length > 1 && (
+        <div className="absolute bottom-8 left-8">
+          <button
+            onClick={goBack}
+            className="text-orange-500 hover:underline text-sm font-bold"
+          >
+            ← Back
+          </button>
+        </div>
+      )}
     </div>
   )
 }

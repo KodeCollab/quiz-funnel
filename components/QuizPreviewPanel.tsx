@@ -60,6 +60,13 @@ export default function QuizPreviewPanel({
     setTimeout(handleNextStep, 300)
   }
 
+  const handleBackStep = () => {
+    if (currentStepIndex > 0) {
+      setCurrentStepIndex(currentStepIndex - 1)
+      setSelectedAnswer('')
+    }
+  }
+
   const effectivePreviewStep = previewingStep || autoPreviewStep
 
   if (effectivePreviewStep) {
@@ -73,7 +80,7 @@ export default function QuizPreviewPanel({
       switch (currentStep.type) {
         case 'single_select':
           return (
-            <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <div className="relative flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
               <div className="w-full max-w-full">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                   {currentStep.question}
@@ -96,12 +103,20 @@ export default function QuizPreviewPanel({
                   ))}
                 </div>
               </div>
+              {currentStepIndex > 0 && (
+                <button
+                  onClick={handleBackStep}
+                  className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
+                >
+                  ← Back
+                </button>
+              )}
             </div>
           )
         case 'multiple_select':
         case 'multi_select':
           return (
-            <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <div className="relative flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
               <div className="w-full max-w-full">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                   {currentStep.question}
@@ -153,11 +168,19 @@ export default function QuizPreviewPanel({
                   Continue
                 </button>
               </div>
+              {currentStepIndex > 0 && (
+                <button
+                  onClick={handleBackStep}
+                  className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
+                >
+                  ← Back
+                </button>
+              )}
             </div>
           )
         case 'email_capture':
           return (
-            <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <div className="relative flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
               <div className="w-full max-w-full">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                   {currentStep.question}
@@ -184,11 +207,19 @@ export default function QuizPreviewPanel({
                   </button>
                 </div>
               </div>
+              {currentStepIndex > 0 && (
+                <button
+                  onClick={handleBackStep}
+                  className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
+                >
+                  ← Back
+                </button>
+              )}
             </div>
           )
         case 'name_capture':
           return (
-            <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <div className="relative flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
               <div className="w-full max-w-full">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                   {currentStep.question}
@@ -216,11 +247,19 @@ export default function QuizPreviewPanel({
                   </button>
                 </div>
               </div>
+              {currentStepIndex > 0 && (
+                <button
+                  onClick={handleBackStep}
+                  className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
+                >
+                  ← Back
+                </button>
+              )}
             </div>
           )
         case 'phone_capture':
           return (
-            <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <div className="relative flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
               <div className="w-full max-w-full">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                   {currentStep.question}
@@ -248,6 +287,14 @@ export default function QuizPreviewPanel({
                   </button>
                 </div>
               </div>
+              {currentStepIndex > 0 && (
+                <button
+                  onClick={handleBackStep}
+                  className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
+                >
+                  ← Back
+                </button>
+              )}
             </div>
           )
         case 'address_capture':
@@ -256,7 +303,7 @@ export default function QuizPreviewPanel({
         case 'housenumber_capture':
         case 'country_capture':
           return (
-            <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <div className="relative flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
               <div className="w-full max-w-full">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                   {currentStep.question}
@@ -284,12 +331,20 @@ export default function QuizPreviewPanel({
                   </button>
                 </div>
               </div>
+              {currentStepIndex > 0 && (
+                <button
+                  onClick={handleBackStep}
+                  className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
+                >
+                  ← Back
+                </button>
+              )}
             </div>
           )
         case 'text_input':
         case 'textarea':
           return (
-            <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <div className="relative flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
               <div className="w-full max-w-full">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                   {currentStep.question}
@@ -317,6 +372,14 @@ export default function QuizPreviewPanel({
                   </button>
                 </div>
               </div>
+              {currentStepIndex > 0 && (
+                <button
+                  onClick={handleBackStep}
+                  className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
+                >
+                  ← Back
+                </button>
+              )}
             </div>
           )
         case 'loading_screen':

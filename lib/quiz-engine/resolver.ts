@@ -31,54 +31,18 @@ export function resolveNextStep(
   allAnswers: Record<string, unknown>,
   allSteps?: QuizStep[]
 ): string {
-  // Skip answer-level branching entirely - use step-level routing for clarity
-  // This prevents ID mismatch issues when steps are created/reordered
+  // All steps must have explicit routing via step.next
+  // No auto-flow or answer-level branching
 
-  // Check step-level next field
   if (!step.next) {
-    // Auto-flow to next step in sequence
-    if (allSteps) {
-      const currentIndex = allSteps.findIndex((s) => s.id === step.id)
-      if (currentIndex !== -1 && currentIndex < allSteps.length - 1) {
-        const nextStep = allSteps[currentIndex + 1]
-        console.log(`[resolveNextStep] Auto-flow from ${step.id} to ${nextStep.id}`)
-        return nextStep.id
-      }
-      // End of quiz - look for results page or return last step
-      const resultsStep = allSteps.find((s) => s.type === 'results_page')
-      if (resultsStep) {
-        console.log(`[resolveNextStep] End of quiz, returning results page: ${resultsStep.id}`)
-        return resultsStep.id
-      }
-      // No results page, return last step ID as fallback
-      const lastStep = allSteps[allSteps.length - 1]
-      console.log(`[resolveNextStep] No results page found, staying on last step: ${lastStep.id}`)
-      return lastStep.id
-    }
-    console.log(`[resolveNextStep] No allSteps provided, cannot auto-flow`)
+    console.error(`[resolveNextStep] Step "${step.id}" has no next step configured`)
     return step.id
   }
 
   if (typeof step.next === 'string') {
-    // Validate that the next step exists
-    if (allSteps && allSteps.find((s) => s.id === step.next)) {
-      console.log(`[resolveNextStep] Direct next: ${step.next}`)
-      return step.next
-    } else {
-      // Next step doesn't exist, auto-flow instead
-      console.warn(`[resolveNextStep] Next step "${step.next}" not found, auto-flowing`)
-      if (allSteps) {
-        const currentIndex = allSteps.findIndex((s) => s.id === step.id)
-        if (currentIndex !== -1 && currentIndex < allSteps.length - 1) {
-          const nextStep = allSteps[currentIndex + 1]
-          console.log(`[resolveNextStep] Auto-flow from ${step.id} to ${nextStep.id}`)
-          return nextStep.id
-        }
-        const lastStep = allSteps[allSteps.length - 1]
-        return lastStep.id
-      }
-      return step.id
-    }
+    // Direct next step
+    console.log(`[resolveNextStep] Direct next: ${step.next}`)
+    return step.next
   }
 
   // Conditional branching
@@ -89,26 +53,11 @@ export function resolveNextStep(
         return branch.next
       }
     }
-
-    // No condition matched - auto-flow to next step in sequence
-    if (allSteps) {
-      const currentIndex = allSteps.findIndex((s) => s.id === step.id)
-      if (currentIndex !== -1 && currentIndex < allSteps.length - 1) {
-        const nextStep = allSteps[currentIndex + 1]
-        console.log(`[resolveNextStep] No condition matched, auto-flowing from ${step.id} to ${nextStep.id}`)
-        return nextStep.id
-      }
-      // End of quiz - look for results page
-      const resultsStep = allSteps.find((s) => s.type === 'results_page')
-      if (resultsStep) {
-        console.log(`[resolveNextStep] End of quiz, returning results page: ${resultsStep.id}`)
-        return resultsStep.id
-      }
-    }
+    console.error(`[resolveNextStep] No condition matched for step "${step.id}"`)
+    return step.id
   }
 
-  // Fallback - return current step
-  console.log(`[resolveNextStep] No valid next step found, staying on current step: ${step.id}`)
+  console.error(`[resolveNextStep] Invalid next configuration for step "${step.id}"`)
   return step.id
 }
 

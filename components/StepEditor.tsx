@@ -141,20 +141,20 @@ export default function StepEditor({ step, onSave, onClose, allSteps = [] }: Ste
             />
           </div>
 
-          {/* Next Step (optional) */}
+          {/* Next Step (required) */}
           {formData.type !== 'results_page' && (
             <div>
               <label className="block text-sm font-bold text-gray-900 mt-3 mb-3">
-                Next Step (optional - leave empty for auto-flow)
+                Next Step
               </label>
               <select
                 value={(formData as any).next || ''}
                 onChange={(e) =>
-                  setFormData({ ...formData, next: e.target.value || undefined })
+                  setFormData({ ...formData, next: e.target.value })
                 }
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
               >
-                <option value="">Auto-flow to next step in sequence</option>
+                <option value="" disabled>Select next step...</option>
                 {allSteps.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.type === 'results_page' ? '✓ Results Page' : s.question}
