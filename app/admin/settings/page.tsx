@@ -166,7 +166,8 @@ export default function SettingsPage() {
               <input
                 type="color"
                 defaultValue="#FF9332"
-                className="w-24 h-14 rounded cursor-pointer"
+                className="w-24 h-14 cursor-pointer border-0 p-0 m-0 block"
+                style={{ borderRadius: '4px' }}
               />
             </div>
             <div>
@@ -176,7 +177,8 @@ export default function SettingsPage() {
               <input
                 type="color"
                 defaultValue="#FFFFFF"
-                className="w-24 h-14 rounded cursor-pointer"
+                className="w-24 h-14 cursor-pointer border-0 p-0 m-0 block"
+                style={{ borderRadius: '4px' }}
               />
             </div>
 

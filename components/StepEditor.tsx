@@ -7,6 +7,7 @@ interface StepEditorProps {
   step: QuizStep
   onSave: (step: QuizStep) => void
   onClose: () => void
+  allSteps?: QuizStep[]
 }
 
 const stepTypeLabels: Record<string, string> = {
@@ -25,7 +26,7 @@ const stepTypeLabels: Record<string, string> = {
   results_page: 'Results Page',
 }
 
-export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
+export default function StepEditor({ step, onSave, onClose, allSteps = [] }: StepEditorProps) {
   const [formData, setFormData] = useState(() => {
     // Auto-populate question on load if it's "New Question"
     if (step.question === 'New Question' && stepTypeLabels[step.type]) {
@@ -139,6 +140,29 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
             />
           </div>
+
+          {/* Next Step (optional) */}
+          {formData.type !== 'results_page' && (
+            <div>
+              <label className="block text-sm font-bold text-gray-900 mt-3 mb-3">
+                Next Step (optional - leave empty for auto-flow)
+              </label>
+              <select
+                value={(formData as any).next || ''}
+                onChange={(e) =>
+                  setFormData({ ...formData, next: e.target.value || undefined })
+                }
+                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
+              >
+                <option value="">Auto-flow to next step in sequence</option>
+                {allSteps.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.type === 'results_page' ? '✓ Results Page' : s.question}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
 
           {/* Answers (for select types) */}
           {['single_select', 'multiple_select'].includes(formData.type) && (

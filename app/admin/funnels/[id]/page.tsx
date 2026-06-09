@@ -319,7 +319,7 @@ export default function FunnelEditorPage() {
             <button
               onClick={handleAddStep}
               disabled={saving}
-              className="btn-outline-orange mt-8 mb-8 py-4 px-8 text-lg"
+              className="btn-sm-orange mt-12 mb-8"
             >
               + Add Step
             </button>
@@ -346,6 +346,7 @@ export default function FunnelEditorPage() {
           step={editingStep}
           onSave={handleSaveStep}
           onClose={() => setEditingStep(null)}
+          allSteps={funnel?.steps || []}
         />
       )}
 
