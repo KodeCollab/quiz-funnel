@@ -2,24 +2,42 @@
 
 import { useState } from 'react'
 
-interface NameStepProps {
+interface AddressStepProps {
+  type: 'address_capture' | 'zipcode_capture' | 'city_capture' | 'housenumber_capture' | 'country_capture'
   question: string
   description?: string
   value?: string
-  onSubmit: (name: string) => void
+  onSubmit: (value: string) => void
 }
 
-export function NameStep({
+const placeholderByType = {
+  address_capture: 'Enter your street address',
+  zipcode_capture: 'Enter your postal code',
+  city_capture: 'Enter your city',
+  housenumber_capture: 'Enter your house number',
+  country_capture: 'Enter your country',
+}
+
+const labelByType = {
+  address_capture: 'Address',
+  zipcode_capture: 'Postal Code',
+  city_capture: 'City',
+  housenumber_capture: 'House Number',
+  country_capture: 'Country',
+}
+
+export function AddressStep({
+  type,
   question,
   description,
   value,
   onSubmit,
-}: NameStepProps) {
-  const [name, setName] = useState(value || '')
+}: AddressStepProps) {
+  const [input, setInput] = useState(value || '')
 
   const handleSubmit = () => {
-    if (name.trim()) {
-      onSubmit(name)
+    if (input.trim()) {
+      onSubmit(input)
     }
   }
 
@@ -36,20 +54,26 @@ export function NameStep({
         <div className="flex flex-col items-center justify-center mt-8 md:mt-12">
           <div className="input-container-block">
             <input
-              id="name-input"
-              name="name"
+              id={`${type}-input`}
+              name={labelByType[type].toLowerCase().replace(/\s+/g, '-')}
               type="text"
-              autoComplete="name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Your full name"
+              autoComplete={
+                type === 'zipcode_capture' ? 'postal-code' :
+                type === 'city_capture' ? 'address-level2' :
+                type === 'country_capture' ? 'country-name' :
+                type === 'housenumber_capture' ? 'street-address' :
+                'street-address'
+              }
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder={placeholderByType[type]}
               style={{ WebkitFontSmoothing: 'antialiased' }}
             />
           </div>
 
           <button
             onClick={handleSubmit}
-            disabled={!name.trim()}
+            disabled={!input.trim()}
             className="btn-orange-block"
             style={{ WebkitFontSmoothing: 'antialiased' }}
           >

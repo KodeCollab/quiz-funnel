@@ -53,9 +53,18 @@ export default function FunnelEditorPage() {
     if (!confirm('Are you sure you want to delete this step?')) return
 
     setSaving(true)
+    const remainingSteps = funnel.steps.filter((s) => s.id !== stepId)
+    let newStartStepId = funnel.startStepId
+
+    // If we deleted the start step, update to first remaining step
+    if (stepId === funnel.startStepId && remainingSteps.length > 0) {
+      newStartStepId = remainingSteps[0].id
+    }
+
     const updatedFunnel = {
       ...funnel,
-      steps: funnel.steps.filter((s) => s.id !== stepId),
+      steps: remainingSteps,
+      startStepId: newStartStepId,
     }
 
     const success = await updateFunnel(funnel.id, updatedFunnel)
@@ -70,19 +79,48 @@ export default function FunnelEditorPage() {
     setSaving(true)
 
     const newStepId = `step${Date.now()}`
+    const resultsStep = funnel.steps.find((s) => s.type === 'results_page')
+    const resultsStepId = resultsStep?.id
+
     const newStep: QuizStep = {
       id: newStepId,
       type: 'single_select',
-      question: 'New Question',
+      question: 'Single Select',
       answers: [
-        { label: 'Option 1', value: 'option1' },
-        { label: 'Option 2', value: 'option2' },
+        { label: 'Option 1', value: 'option1', next: resultsStepId || '' },
+        { label: 'Option 2', value: 'option2', next: resultsStepId || '' },
       ],
     }
 
+    // Find the step that currently points to results and update it
+    const updatedSteps = funnel.steps.map((step) => {
+      // Update answer options that point to results
+      if (step.answers) {
+        return {
+          ...step,
+          answers: step.answers.map((a) => ({
+            ...a,
+            next: a.next === resultsStepId ? newStepId : a.next,
+          })),
+        }
+      }
+      // Update next field if it points to results
+      if (step.next === resultsStepId) {
+        return { ...step, next: newStepId }
+      }
+      return step
+    })
+
+    // Insert new step before results page
+    const insertIndex = resultsStepId
+      ? updatedSteps.findIndex((s) => s.id === resultsStepId)
+      : updatedSteps.length
+
+    updatedSteps.splice(insertIndex, 0, newStep)
+
     const updatedFunnel = {
       ...funnel,
-      steps: [...funnel.steps, newStep],
+      steps: updatedSteps,
     }
 
     const success = await updateFunnel(funnel.id, updatedFunnel)
@@ -168,18 +206,26 @@ export default function FunnelEditorPage() {
         </Link>
       </div>
 
-      <div className="flex justify-between items-start mb-12">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">{funnel.name}</h1>
-          <p className="text-gray-600 mt-3 text-lg">/quiz/{funnel.slug}</p>
+      <div className="mb-12">
+        <h1 className="text-3xl font-bold text-gray-900">{funnel.name}</h1>
+        <p className="text-gray-600 mt-3 text-lg">/quiz/{funnel.slug}</p>
+        <div className="flex gap-4 mt-6">
+          <Link
+            href={`/admin/funnels/${funnel.id}/submissions`}
+            className="btn-sm-blue"
+            style={{ maxWidth: '200px' }}
+          >
+            Submissions
+          </Link>
+          <Link
+            href={`/quiz/${funnel.slug}`}
+            target="_blank"
+            className="btn-sm-orange"
+            style={{ maxWidth: '200px' }}
+          >
+            Open Quiz →
+          </Link>
         </div>
-        <Link
-          href={`/quiz/${funnel.slug}`}
-          target="_blank"
-          className="px-8 py-4 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-600 text-lg"
-        >
-          Open Quiz →
-        </Link>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
@@ -188,7 +234,7 @@ export default function FunnelEditorPage() {
           <div className="bg-white rounded-lg shadow p-10">
             <h2 className="text-2xl font-bold text-gray-900 mb-8">Steps</h2>
 
-            <div className="space-y-5">
+            <div className="space-y-8">
               {funnel.steps.map((step, idx) => {
                 const isBeingDragged = draggedIndex === idx
                 const isDragOverTarget =
@@ -243,14 +289,14 @@ export default function FunnelEditorPage() {
                   </div>
 
                   {/* Action buttons */}
-                  <div className="flex gap-4">
+                  <div className="flex flex-col md:flex-row gap-2">
                     <button
                       onClick={(e) => {
                         e.stopPropagation()
                         setEditingStep(step)
                       }}
                       disabled={saving}
-                      className="text-orange-500 hover:underline font-bold text-lg disabled:opacity-50 whitespace-nowrap"
+                      className="flex-1 min-w-[160px] btn-text-orange"
                     >
                       Edit
                     </button>
@@ -260,7 +306,7 @@ export default function FunnelEditorPage() {
                         handleDeleteStep(step.id)
                       }}
                       disabled={saving || funnel.steps.length <= 1}
-                      className="text-red-500 hover:underline font-bold text-lg disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                      className="flex-1 min-w-[160px] btn-text-red"
                     >
                       Delete
                     </button>
@@ -273,7 +319,7 @@ export default function FunnelEditorPage() {
             <button
               onClick={handleAddStep}
               disabled={saving}
-              className="mt-8 w-full py-4 px-8 border-2 border-orange-500 text-orange-500 font-bold rounded-lg hover:bg-orange-50 transition-colors text-lg disabled:opacity-50"
+              className="btn-outline-orange mt-8 py-4 px-8 text-lg"
             >
               + Add Step
             </button>
@@ -309,7 +355,7 @@ export default function FunnelEditorPage() {
         <button
           onClick={handleDeleteFunnel}
           disabled={saving}
-          className="px-8 py-4 bg-red-500 text-white font-bold rounded-lg hover:bg-red-600 disabled:opacity-50 transition-colors text-lg shadow-md hover:shadow-lg"
+          className="btn-red"
         >
           Delete Quiz
         </button>

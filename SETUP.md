@@ -2,6 +2,8 @@
 
 Your quiz funnel platform is ready to launch. Here's what you need to do next.
 
+⚠️ **Important:** This project uses **Next.js 15**, which has breaking changes from your training data. Read `node_modules/next/dist/docs/` and heed deprecation notices before writing code.
+
 ## Step 1: Create Supabase Project (5 mins)
 
 1. Go to https://supabase.com and sign up
@@ -262,4 +264,6 @@ We'll add this to the API next.
 
 **You're ready to launch!** 🚀
 
-Any questions? Check the code comments or reach out.
+For more details, see [CLAUDE.md](./CLAUDE.md) (developer guide) and [QUIZ_PLATFORM.md](./QUIZ_PLATFORM.md) (features).
+
+**Last Updated:** 2026-06-09

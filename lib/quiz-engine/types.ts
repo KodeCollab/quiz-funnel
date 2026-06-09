@@ -2,6 +2,7 @@ import { z } from 'zod'
 
 export type StepType =
   | 'address_lookup'
+  | 'address_capture'
   | 'multiple_choice'
   | 'image_select'
   | 'single_select'
@@ -12,6 +13,10 @@ export type StepType =
   | 'email_capture'
   | 'phone_capture'
   | 'name_capture'
+  | 'zipcode_capture'
+  | 'city_capture'
+  | 'housenumber_capture'
+  | 'country_capture'
   | 'slider'
   | 'loading_screen'
   | 'results_page'
@@ -46,6 +51,8 @@ export interface QuizStep {
   max?: number
   step?: number
   next?: string | ConditionalNext[]
+  ctaText?: string
+  ctaLink?: string
 }
 
 export interface FunnelTheme {
@@ -100,9 +107,11 @@ export interface QuizStoreState {
   answers: Record<string, unknown>
   history: string[]
   sessionId: string
+  submissionId: string | null
   setFunnelId: (id: string) => void
   setCurrentStep: (stepId: string) => void
   setAnswer: (stepId: string, value: unknown) => void
+  setSubmissionId: (id: string | null) => void
   goNext: (nextStepId: string) => void
   goBack: () => void
   reset: () => void

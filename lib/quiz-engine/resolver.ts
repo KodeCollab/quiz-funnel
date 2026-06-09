@@ -31,6 +31,16 @@ export function resolveNextStep(
   allAnswers: Record<string, unknown>,
   allSteps?: QuizStep[]
 ): string {
+  // First, check if this is a single/multiple select step with answer-level branching
+  if ((step.type === 'single_select' || step.type === 'multiple_select') && step.answers) {
+    const selectedAnswer = step.answers.find((a) => a.value === answer)
+    if (selectedAnswer && selectedAnswer.next) {
+      console.log(`[resolveNextStep] Answer-level next: ${selectedAnswer.next}`)
+      return selectedAnswer.next
+    }
+  }
+
+  // Otherwise, check step-level next field
   if (!step.next) {
     // Auto-flow to next step in sequence
     if (allSteps) {

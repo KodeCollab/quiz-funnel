@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { QuizStep } from '@/lib/quiz-engine/types'
 
 interface StepEditorProps {
@@ -9,8 +9,30 @@ interface StepEditorProps {
   onClose: () => void
 }
 
+const stepTypeLabels: Record<string, string> = {
+  email_capture: 'Email',
+  name_capture: 'Name',
+  phone_capture: 'Phone',
+  address_capture: 'Address',
+  zipcode_capture: 'Postal Code',
+  city_capture: 'City',
+  housenumber_capture: 'House Number',
+  country_capture: 'Country',
+  text_input: 'Text Input',
+  single_select: 'Single Select',
+  multiple_select: 'Multiple Select',
+  loading_screen: 'Loading Screen',
+  results_page: 'Results Page',
+}
+
 export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
-  const [formData, setFormData] = useState(step)
+  const [formData, setFormData] = useState(() => {
+    // Auto-populate question on load if it's "New Question"
+    if (step.question === 'New Question' && stepTypeLabels[step.type]) {
+      return { ...step, question: stepTypeLabels[step.type] }
+    }
+    return step
+  })
 
   const handleSave = () => {
     onSave(formData)
@@ -31,7 +53,14 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
 
   const handleUpdateAnswer = (idx: number, field: string, value: string) => {
     const newAnswers = [...((formData as any).answers || [])]
-    newAnswers[idx] = { ...newAnswers[idx], [field]: value }
+    const updatedAnswer = { ...newAnswers[idx], [field]: value }
+
+    // Auto-generate value from label
+    if (field === 'label') {
+      updatedAnswer.value = value.toLowerCase().replace(/\s+/g, '-')
+    }
+
+    newAnswers[idx] = updatedAnswer
     setFormData({ ...formData, answers: newAnswers } as any)
   }
 
@@ -51,14 +80,16 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
         <div className="p-8 space-y-8">
           {/* Step Type */}
           <div>
-            <label className="block text-sm font-bold text-gray-900 mb-3">
+            <label className="block text-sm font-bold text-gray-900 mt-3 mb-3">
               Step Type
             </label>
             <select
               value={formData.type}
-              onChange={(e) =>
-                setFormData({ ...formData, type: e.target.value as any })
-              }
+              onChange={(e) => {
+                const newType = e.target.value as any
+                const newQuestion = stepTypeLabels[newType] || 'Question'
+                setFormData({ ...formData, type: newType, question: newQuestion })
+              }}
               className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
             >
               <option value="single_select">Single Select</option>
@@ -66,6 +97,11 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
               <option value="email_capture">Email</option>
               <option value="name_capture">Name</option>
               <option value="phone_capture">Phone</option>
+              <option value="address_capture">Address</option>
+              <option value="zipcode_capture">Postal Code</option>
+              <option value="city_capture">City</option>
+              <option value="housenumber_capture">House Number</option>
+              <option value="country_capture">Country</option>
               <option value="text_input">Text Input</option>
               <option value="loading_screen">Loading Screen</option>
               <option value="results_page">Results Page</option>
@@ -74,7 +110,7 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
 
           {/* Question */}
           <div>
-            <label className="block text-sm font-bold text-gray-900 mb-3">
+            <label className="block text-sm font-bold text-gray-900 mt-3 mb-3">
               Question / Label
             </label>
             <input
@@ -90,7 +126,7 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
 
           {/* Description (optional) */}
           <div>
-            <label className="block text-sm font-bold text-gray-900 mb-3">
+            <label className="block text-sm font-bold text-gray-900 mt-3 mb-3">
               Description (optional)
             </label>
             <textarea
@@ -107,7 +143,7 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
           {/* Answers (for select types) */}
           {['single_select', 'multiple_select'].includes(formData.type) && (
             <div>
-              <div className="flex justify-between items-center mb-4">
+              <div className="flex justify-between items-center mt-3 mb-4">
                 <label className="block text-sm font-bold text-gray-900">
                   Answers
                 </label>
@@ -123,9 +159,9 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
                   (answer: any, idx: number) => (
                     <div
                       key={idx}
-                      className="p-4 border border-gray-200 rounded-lg space-y-3"
+                      className="p-3"
                     >
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 mt-3 mb-3">
                         <input
                           type="text"
                           value={answer.label}
@@ -133,28 +169,54 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
                             handleUpdateAnswer(idx, 'label', e.target.value)
                           }
                           placeholder="Answer text"
-                          className="flex-1 px-3 py-2 border border-gray-200 rounded text-sm"
+                          className="flex-1 px-4 py-1 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
                         />
                         <button
                           onClick={() => handleRemoveAnswer(idx)}
                           disabled={(formData as any).answers?.length <= 1}
-                          className="px-3 py-2 text-red-500 hover:bg-red-50 rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                          className="px-4 py-3 border border-red-200 rounded-lg text-red-500 hover:bg-red-50 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
                           Remove
                         </button>
                       </div>
-                      <input
-                        type="text"
-                        value={answer.value}
-                        onChange={(e) =>
-                          handleUpdateAnswer(idx, 'value', e.target.value)
-                        }
-                        placeholder="Value (e.g., yes, no)"
-                        className="w-full px-3 py-2 border border-gray-200 rounded text-sm"
-                      />
                     </div>
                   )
                 )}
+              </div>
+            </div>
+          )}
+
+          {/* Button (for results page) */}
+          {formData.type === 'results_page' && (
+            <div className="space-y-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
+              <h3 className="font-bold text-gray-900">Button (Optional)</h3>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mt-3 mb-3">
+                  Button Text
+                </label>
+                <input
+                  type="text"
+                  value={(formData as any).ctaText || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, ctaText: e.target.value })
+                  }
+                  placeholder="Leave empty to hide button"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mt-3 mb-3">
+                  Button Link
+                </label>
+                <input
+                  type="text"
+                  value={(formData as any).ctaLink || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, ctaLink: e.target.value })
+                  }
+                  placeholder="e.g., https://example.com or /page"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
+                />
               </div>
             </div>
           )}

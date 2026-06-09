@@ -68,23 +68,23 @@ export default function QuizPreviewPanel({
       switch (currentStep.type) {
         case 'single_select':
           return (
-            <div className="flex flex-col items-center justify-center min-h-[500px] bg-white p-8 antialiased" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full max-w-2xl px-4">
+            <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full max-w-full">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                  {currentStep.question}
+                </h1>
                 {currentStep.description && (
-                  <p className="text-sm text-gray-500 text-center mb-6 px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                  <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                     {currentStep.description}
                   </p>
                 )}
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                  {currentStep.question}
-                </h1>
 
-                <div className="space-y-6">
+                <div className="space-y-4 mt-8 md:mt-12 px-2">
                   {currentStep.answers?.map((answer) => (
                     <button
                       key={answer.value}
                       onClick={() => handleSelectAnswer(answer.value)}
-                      className="w-full px-8 py-6 rounded-xl transition-all text-center text-lg font-semibold shadow-sm hover:shadow-md border-transparent bg-orange-500 text-white hover:bg-orange-600"
+                      className="btn-orange-block"
                     >
                       {answer.label}
                     </button>
@@ -96,18 +96,18 @@ export default function QuizPreviewPanel({
         case 'multiple_select':
         case 'multi_select':
           return (
-            <div className="flex flex-col items-center justify-center min-h-[500px] bg-white p-8 antialiased" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full max-w-2xl px-4">
+            <div className="flex flex-col items-center justify-center min-h-96 bg-white p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full max-w-full">
+                <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                  {currentStep.question}
+                </h1>
                 {currentStep.description && (
-                  <p className="text-sm text-gray-500 text-center mb-6 px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                  <p className="text-xl text-gray-600 text-center mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                     {currentStep.description}
                   </p>
                 )}
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                  {currentStep.question}
-                </h1>
 
-                <div className="space-y-6">
+                <div className="space-y-4 mt-8 md:mt-12 px-2">
                   {currentStep.answers?.map((answer) => (
                     <button
                       key={answer.value}
@@ -127,11 +127,7 @@ export default function QuizPreviewPanel({
                           )
                         }
                       }}
-                      className={`w-full p-5 rounded-xl transition-all text-center text-lg font-semibold shadow-sm hover:shadow-md border-transparent flex items-center justify-center gap-3 ${
-                        selectedAnswer.includes(answer.value)
-                          ? 'bg-orange-500 text-white'
-                          : 'bg-white text-gray-900 border border-gray-200'
-                      }`}
+                      className="btn-orange-block flex items-center justify-center gap-3"
                     >
                       <span className="text-xl">{selectedAnswer.includes(answer.value) ? '☑' : '☐'}</span>
                       {answer.label}
@@ -139,41 +135,40 @@ export default function QuizPreviewPanel({
                   ))}
                 </div>
 
-                <div className="mt-8">
-                  <button
-                    onClick={handleNextStep}
-                    disabled={selectedAnswer.length === 0}
-                    className="w-full p-5 bg-orange-500 text-white rounded-xl hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed font-semibold text-lg transition-colors shadow-sm hover:shadow-md"
-                  >
-                    Submit
-                  </button>
-                </div>
+                <button
+                  onClick={handleNextStep}
+                  disabled={selectedAnswer.length === 0}
+                  className="btn-orange-block"
+                >
+                  Continue
+                </button>
               </div>
             </div>
           )
         case 'email_capture':
           return (
-            <div className="flex flex-col items-center justify-center min-h-[500px] bg-white p-8 antialiased" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full max-w-2xl px-4">
+            <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full max-w-full">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                  {currentStep.question}
+                </h1>
                 {currentStep.description && (
-                  <p className="text-sm text-gray-500 text-center mb-6 px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                  <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                     {currentStep.description}
                   </p>
                 )}
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-12 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                  {currentStep.question}
-                </h1>
 
-                <div className="space-y-4">
-                  <input
-                    type="email"
-                    placeholder="your@email.com"
-                    className="w-full px-6 py-4 text-lg border border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 shadow-sm"
-                    style={{ WebkitFontSmoothing: 'antialiased', borderColor: 'transparent' }}
-                  />
+                <div className="flex flex-col items-center justify-center mt-8 md:mt-12">
+                  <div className="input-container-block">
+                    <input
+                      type="email"
+                      placeholder="your@email.com"
+                      style={{ WebkitFontSmoothing: 'antialiased' }}
+                    />
+                  </div>
                   <button
                     onClick={handleNextStep}
-                    className="w-full py-4 px-6 bg-orange-500 text-white font-semibold text-lg rounded-xl hover:bg-orange-600 transition-colors shadow-sm hover:shadow-md"
+                    className="btn-orange-block"
                   >
                     Continue
                   </button>
@@ -183,27 +178,29 @@ export default function QuizPreviewPanel({
           )
         case 'name_capture':
           return (
-            <div className="flex flex-col items-center justify-center min-h-[500px] bg-white p-8 antialiased" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full max-w-2xl px-4">
+            <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full max-w-full">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                  {currentStep.question}
+                </h1>
                 {currentStep.description && (
-                  <p className="text-sm text-gray-500 text-center mb-4 px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                  <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                     {currentStep.description}
                   </p>
                 )}
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                  {currentStep.question}
-                </h1>
 
-                <div className="space-y-4">
-                  <input
-                    type="text"
-                    placeholder="Your full name"
-                    className="w-full px-6 py-4 text-lg border border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 shadow-sm"
-                    style={{ WebkitFontSmoothing: 'antialiased', borderColor: 'transparent' }}
-                  />
+                <div className="flex flex-col items-center justify-center mt-8 md:mt-12">
+                  <div className="input-container-block">
+                    <input
+                      type="text"
+                      placeholder="Your full name"
+                      style={{ WebkitFontSmoothing: 'antialiased' }}
+                    />
+                  </div>
+
                   <button
                     onClick={handleNextStep}
-                    className="w-full py-4 px-6 bg-orange-500 text-white font-semibold text-lg rounded-xl hover:bg-orange-600 transition-colors shadow-sm hover:shadow-md"
+                    className="btn-orange-block"
                   >
                     Continue
                   </button>
@@ -213,27 +210,29 @@ export default function QuizPreviewPanel({
           )
         case 'phone_capture':
           return (
-            <div className="flex flex-col items-center justify-center min-h-[500px] bg-white p-8 antialiased" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full max-w-2xl px-4">
+            <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full max-w-full">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                  {currentStep.question}
+                </h1>
                 {currentStep.description && (
-                  <p className="text-sm text-gray-500 text-center mb-4 px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                  <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                     {currentStep.description}
                   </p>
                 )}
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                  {currentStep.question}
-                </h1>
 
-                <div className="space-y-4">
-                  <input
-                    type="tel"
-                    placeholder="+44 123 456 7890"
-                    className="w-full px-6 py-4 text-lg border border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 shadow-sm"
-                    style={{ WebkitFontSmoothing: 'antialiased', borderColor: 'transparent' }}
-                  />
+                <div className="flex flex-col items-center justify-center mt-8 md:mt-12">
+                  <div className="input-container-block">
+                    <input
+                      type="tel"
+                      placeholder="+44 123 456 7890"
+                      style={{ WebkitFontSmoothing: 'antialiased' }}
+                    />
+                  </div>
+
                   <button
                     onClick={handleNextStep}
-                    className="w-full py-4 px-6 bg-orange-500 text-white font-semibold text-lg rounded-xl hover:bg-orange-600 transition-colors shadow-sm hover:shadow-md"
+                    className="btn-orange-block"
                   >
                     Continue
                   </button>
@@ -243,8 +242,8 @@ export default function QuizPreviewPanel({
           )
         case 'loading_screen':
           return (
-            <div className="flex flex-col items-center justify-center min-h-[500px] bg-white p-8 antialiased" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full max-w-2xl text-center px-4">
+            <div className="flex flex-col items-center justify-center min-h-[500px] bg-white p-4 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full text-center px-2">
                 <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-16 leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                   {currentStep.question}
                 </h1>
@@ -257,8 +256,8 @@ export default function QuizPreviewPanel({
           )
         case 'results_page':
           return (
-            <div className="flex flex-col items-center justify-center min-h-[500px] bg-white p-8 antialiased" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full max-w-2xl text-center px-4">
+            <div className="flex flex-col items-center justify-center min-h-[500px] bg-white p-4 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full text-center px-2">
                 <div className="mb-12">
                   <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-green-100 mb-8">
                     <svg
@@ -296,32 +295,15 @@ export default function QuizPreviewPanel({
 
     return (
       <div className="sticky top-8">
-        <div className="bg-gray-100 p-4 border-b border-gray-200 flex justify-between items-center rounded-t-lg">
+        <div className="bg-gray-100 p-4 border-b border-gray-200 rounded-t-lg">
           <div>
             <h3 className="font-bold text-gray-900">Step Preview</h3>
             <p className="text-xs text-gray-600 mt-1">Mobile view</p>
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => {
-                setCurrentStepIndex(0)
-                setSelectedAnswer('')
-              }}
-              className="px-3 py-1 text-sm bg-orange-500 text-white rounded hover:bg-orange-600 font-bold"
-            >
-              Restart
-            </button>
-            <button
-              onClick={onCloseStepPreview}
-              className="text-gray-500 hover:text-gray-700 text-2xl"
-            >
-              ×
-            </button>
-          </div>
         </div>
 
         {/* Mobile Frame */}
-        <div className="bg-white rounded-b-lg shadow-xl overflow-hidden">
+        <div className="bg-white rounded-b-lg shadow-xl overflow-hidden overflow-x-hidden">
           {/* Phone notch */}
           <div className="bg-black h-7 flex items-center justify-between px-4 text-white text-xs">
             <span></span>
@@ -329,7 +311,7 @@ export default function QuizPreviewPanel({
           </div>
 
           {/* Phone content */}
-          <div className="bg-white max-h-[600px] overflow-y-auto">
+          <div className="bg-white max-h-[600px] overflow-y-auto overflow-x-hidden w-full">
             {renderStep()}
           </div>
 
@@ -346,18 +328,42 @@ export default function QuizPreviewPanel({
             </p>
           </div>
         </div>
+
+        {/* Restart Button */}
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => {
+              setCurrentStepIndex(0)
+              setSelectedAnswer('')
+            }}
+            className="btn-sm-orange"
+          >
+            Restart
+          </button>
+        </div>
       </div>
     )
   }
 
   return (
-    <div className="sticky top-8 bg-white rounded-lg shadow overflow-hidden">
-      <div className="bg-gray-100 p-4 border-b border-gray-200">
-        <h3 className="font-bold text-gray-900">Live Preview</h3>
-        <p className="text-xs text-gray-600 mt-1">See changes in real-time</p>
+    <div className="sticky top-8">
+      <div className="bg-gray-100 p-4 border-b border-gray-200 flex justify-between items-center rounded-t-lg">
+        <div>
+          <h3 className="font-bold text-gray-900">Live Preview</h3>
+          <p className="text-xs text-gray-600 mt-1">Mobile view</p>
+        </div>
       </div>
-      <div className="p-4 bg-gradient-to-br from-gray-50 to-gray-100 min-h-[600px] flex items-center justify-center">
-        <div className="w-full max-w-sm">
+
+      {/* Mobile Frame */}
+      <div className="bg-white rounded-b-lg shadow-xl overflow-hidden overflow-x-hidden">
+        {/* Phone notch */}
+        <div className="bg-black h-7 flex items-center justify-between px-4 text-white text-xs">
+          <span></span>
+          <span>9:41</span>
+        </div>
+
+        {/* Phone content */}
+        <div className="bg-white max-h-[600px] overflow-y-auto overflow-x-hidden w-full">
           <QuizRenderer
             funnel={funnel}
             key={funnel.steps.length}

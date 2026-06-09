@@ -18,25 +18,21 @@ export function SingleSelectStep({
   onSelect,
 }: SingleSelectStepProps) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white p-6 antialiased" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-      <div className="w-full max-w-2xl">
-        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 text-center leading-tight select-none" style={{ WebkitFontSmoothing: 'antialiased' }}>
+    <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+      <div className="w-full max-w-full">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
           {question}
         </h1>
         {description && (
-          <p className="text-xl text-gray-600 text-center mb-12 leading-relaxed" style={{ WebkitFontSmoothing: 'antialiased' }}>{description}</p>
+          <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>{description}</p>
         )}
 
-        <div className="space-y-6">
+        <div className="space-y-4 mt-8 md:mt-12 px-2">
           {answers.map((answer) => (
             <button
               key={answer.value}
               onClick={() => onSelect(answer.value)}
-              className={`w-full p-6 rounded-xl transition-all text-center text-lg font-semibold shadow-sm hover:shadow-md border-transparent ${
-                selected === answer.value
-                  ? 'bg-orange-500 text-white'
-                  : 'bg-orange-500 text-white hover:bg-orange-600'
-              }`}
+              className="btn-orange-block"
             >
               {answer.label}
             </button>

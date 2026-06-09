@@ -5,7 +5,7 @@ import { AnimatePresence } from 'framer-motion'
 import { FunnelConfig, QuizStep } from '@/lib/quiz-engine/types'
 import { resolveNextStep, calculateLeadScore } from '@/lib/quiz-engine/resolver'
 import { useQuizStore } from '@/lib/store/quiz-store'
-import { createSubmission } from '@/lib/supabase/queries'
+import { createSubmission, updateSubmission } from '@/lib/supabase/queries'
 import { appendToGoogleSheet } from '@/lib/integrations/google-sheets'
 import { QuestionStep } from './QuestionStep'
 import { ProgressBar } from './ProgressBar'
@@ -13,6 +13,7 @@ import { SingleSelectStep } from './steps/SingleSelectStep'
 import { EmailStep } from './steps/EmailStep'
 import { NameStep } from './steps/NameStep'
 import { PhoneStep } from './steps/PhoneStep'
+import { AddressStep } from './steps/AddressStep'
 import { LoadingStep } from './steps/LoadingStep'
 import { ResultsStep } from './steps/ResultsStep'
 
@@ -33,9 +34,11 @@ export function QuizRenderer({
     currentStepId,
     answers,
     sessionId,
+    submissionId,
     setFunnelId,
     setCurrentStep,
     setAnswer,
+    setSubmissionId,
     goNext,
     reset,
   } = useQuizStore()
@@ -47,20 +50,26 @@ export function QuizRenderer({
   useEffect(() => {
     setFunnelId(funnel.id)
     if (!currentStepId) {
-      const startId = funnel.startStepId || funnel.steps[0]?.id
+      // Verify startStepId is valid, otherwise use first step
+      let startId = funnel.startStepId
+      if (!funnel.steps.some((s) => s.id === startId)) {
+        startId = funnel.steps[0]?.id || ''
+      }
       if (startId) {
         setCurrentStep(startId)
       }
     }
-  }, [funnel.id])
+  }, [funnel.id, funnel.steps])
 
   // Get current step - default to first step if empty
   const effectiveStepId = currentStepId || funnel.steps[0]?.id || ''
   const currentStep = funnel.steps.find((s) => s.id === effectiveStepId)
   const visibleSteps = funnel.steps.filter(
-    (s) => s.type !== 'loading_screen' && s.type !== 'results_page'
+    (s) => s.type !== 'loading_screen'
   )
-  const progress = visibleSteps.findIndex((s) => s.id === currentStepId) + 1
+  const currentVisibleIndex = visibleSteps.findIndex((s) => s.id === currentStepId)
+  // If current step is visible, show its progress; if hidden step, show full progress
+  const progress = currentVisibleIndex >= 0 ? currentVisibleIndex + 1 : visibleSteps.length
 
   if (!currentStep) {
     console.error(`[QuizRenderer] Step not found. currentStepId=${currentStepId}, available steps:`, funnel.steps.map(s => s.id))
@@ -74,67 +83,126 @@ export function QuizRenderer({
     )
   }
 
+  const extractLeadData = (allAnswers: Record<string, unknown>) => {
+    let email = ''
+    let name = ''
+    let phone = ''
+
+    for (const step of funnel.steps) {
+      if (step.type === 'email_capture' && allAnswers[step.id]) {
+        email = String(allAnswers[step.id])
+      } else if (step.type === 'name_capture' && allAnswers[step.id]) {
+        name = String(allAnswers[step.id])
+      } else if (step.type === 'phone_capture' && allAnswers[step.id]) {
+        phone = String(allAnswers[step.id])
+      }
+    }
+
+    return { email, name, phone }
+  }
+
   const handleStepSubmit = async (value: unknown) => {
+    console.log('[handleStepSubmit] Step submitted:', {
+      stepId: currentStep.id,
+      stepType: currentStep.type,
+      value,
+      currentAnswers: answers,
+    })
+
     const stepId = currentStep.id
+
+    // Build final answers with all previous answers + current answer
+    const allAnswers = {
+      ...answers,
+      [stepId]: value,
+    }
+
+    // Update store with the new answer
     setAnswer(stepId, value)
 
-    // Check if this is a final step
-    const isFinalStep = currentStep.type === 'phone_capture'
+    // Get next step
+    const nextStepId = resolveNextStep(currentStep, value, allAnswers, funnel.steps)
+    const nextStep = funnel.steps.find((s) => s.id === nextStepId)
+    const isMovingToResults = nextStep?.type === 'results_page'
 
-    if (isFinalStep) {
-      setIsSubmitting(true)
+    const finalAnswers = allAnswers
 
-      const finalAnswers = {
-        ...answers,
-        [stepId]: value,
+    // Progressive saving
+    console.log('[handleStepSubmit] Saving step data progressively...')
+    setIsSubmitting(true)
+
+    console.log('[handleStepSubmit] Store answers before submission:', answers)
+    console.log('[handleStepSubmit] Final accumulated answers:', finalAnswers)
+    console.log('[handleStepSubmit] Answer keys in finalAnswers:', Object.keys(finalAnswers))
+
+    // Extract lead data from answers
+    const { email, name, phone } = extractLeadData(finalAnswers)
+    console.log('[handleStepSubmit] Extracted lead data:', { email, name, phone })
+
+    const leadScore = calculateLeadScore(finalAnswers, funnel.scoring)
+    console.log('[handleStepSubmit] Calculated lead score:', leadScore)
+
+    try {
+      let currentSubmissionId = submissionId
+
+      if (!currentSubmissionId) {
+        // Create submission on first step
+        console.log('[handleStepSubmit] Creating submission in Supabase...')
+        currentSubmissionId = await createSubmission(
+          funnel.id,
+          sessionId,
+          finalAnswers,
+          leadScore,
+          email,
+          phone,
+          name
+        )
+        console.log('[handleStepSubmit] Submission created:', currentSubmissionId)
+        if (currentSubmissionId) {
+          setSubmissionId(currentSubmissionId)
+        }
+      } else {
+        // Update existing submission
+        console.log('[handleStepSubmit] Updating submission:', currentSubmissionId)
+        await updateSubmission(
+          currentSubmissionId,
+          finalAnswers,
+          leadScore,
+          email,
+          phone,
+          name,
+          undefined,
+          isMovingToResults ? true : false
+        )
+        console.log('[handleStepSubmit] Submission updated')
       }
 
-      // Extract lead data
-      const leadScore = calculateLeadScore(finalAnswers, funnel.scoring)
-
-      // Create submission
-      const submissionId = await createSubmission(
-        funnel.id,
-        sessionId,
-        finalAnswers,
-        leadScore,
-        finalAnswers.email as string,
-        value as string,
-        finalAnswers.name as string
-      )
-
       // Push to Google Sheets
-      if (funnel.googleSheetsId && submissionId) {
+      if (funnel.googleSheetsId && currentSubmissionId) {
+        console.log('[handleStepSubmit] Pushing to Google Sheets:', funnel.googleSheetsId)
         await appendToGoogleSheet(funnel.googleSheetsId, {
-          id: submissionId,
+          id: currentSubmissionId,
           funnelId: funnel.id,
           sessionId,
           answers: finalAnswers,
           leadScore,
-          email: finalAnswers.email as string,
-          phone: value as string,
-          name: finalAnswers.name as string,
-          completed: true,
+          email,
+          phone,
+          name,
+          completed: isMovingToResults,
           submittedAt: new Date().toISOString(),
         })
+        console.log('[handleStepSubmit] Google Sheets update complete')
       }
-
-      setIsSubmitting(false)
-      const loadingStep = funnel.steps.find((s) => s.type === 'loading_screen')
-      const resultsStep = funnel.steps.find((s) => s.type === 'results_page')
-      const nextStep = loadingStep || resultsStep
-      console.log('[handleStepSubmit] Final step reached. Next:', nextStep?.id)
-      if (nextStep) {
-        goNext(nextStep.id)
-      }
-    } else {
-      // Move to next step based on branching logic
-      const nextStepId = resolveNextStep(currentStep, value, {
-        ...answers,
-        [stepId]: value,
-      }, funnel.steps)
-      goNext(nextStepId)
+    } catch (error) {
+      console.error('[handleStepSubmit] Error during submission:', error)
     }
+
+    setIsSubmitting(false)
+
+    // Move to next step
+    console.log('[handleStepSubmit] Moving to next step:', nextStepId)
+    goNext(nextStepId)
   }
 
   const handleLoadingComplete = () => {
@@ -155,13 +223,12 @@ export function QuizRenderer({
   }
 
   return (
-    <div className="w-full">
-      <div className="flex justify-between items-center mb-4 px-4 gap-2">
-        <ProgressBar current={progress} total={visibleSteps.length} />
-      </div>
+    <div className="w-full flex flex-col overflow-x-hidden">
+      <ProgressBar current={progress} total={visibleSteps.length} />
 
-      <AnimatePresence mode="wait">
-        <QuestionStep key={currentStepId} stepKey={currentStepId}>
+      <div className="flex-1 overflow-x-hidden">
+        <AnimatePresence mode="wait">
+          <QuestionStep key={currentStepId} stepKey={currentStepId}>
           {currentStep.type === 'single_select' && (
             <SingleSelectStep
               question={currentStep.question}
@@ -199,6 +266,16 @@ export function QuizRenderer({
             />
           )}
 
+          {['address_capture', 'zipcode_capture', 'city_capture', 'housenumber_capture', 'country_capture'].includes(currentStep.type) && (
+            <AddressStep
+              type={currentStep.type as any}
+              question={currentStep.question}
+              description={currentStep.description}
+              value={answers[currentStepId] as string}
+              onSubmit={handleStepSubmit}
+            />
+          )}
+
           {currentStep.type === 'loading_screen' && (
             <LoadingStep
               question={currentStep.question}
@@ -210,10 +287,13 @@ export function QuizRenderer({
             <ResultsStep
               question={currentStep.question}
               description={currentStep.description}
+              ctaText={currentStep.ctaText}
+              ctaLink={currentStep.ctaLink}
             />
           )}
         </QuestionStep>
-      </AnimatePresence>
+        </AnimatePresence>
+      </div>
     </div>
   )
 }

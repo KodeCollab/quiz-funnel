@@ -8,6 +8,7 @@ export const useQuizStore = create<QuizStoreState>((set) => ({
   answers: {},
   history: [],
   sessionId: uuidv4(),
+  submissionId: null,
 
   setFunnelId: (id: string) =>
     set(() => ({
@@ -26,6 +27,11 @@ export const useQuizStore = create<QuizStoreState>((set) => ({
         ...state.answers,
         [stepId]: value,
       },
+    })),
+
+  setSubmissionId: (id: string | null) =>
+    set(() => ({
+      submissionId: id,
     })),
 
   goNext: (nextStepId: string) =>
@@ -50,5 +56,6 @@ export const useQuizStore = create<QuizStoreState>((set) => ({
       answers: {},
       history: [],
       sessionId: uuidv4(),
+      submissionId: null,
     })),
 }))

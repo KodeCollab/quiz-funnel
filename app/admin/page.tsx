@@ -2,13 +2,12 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { getAllFunnels, deleteFunnel } from '@/lib/supabase/queries'
+import { getAllFunnels } from '@/lib/supabase/queries'
 import { FunnelConfig } from '@/lib/quiz-engine/types'
 
 export default function AdminDashboard() {
   const [funnels, setFunnels] = useState<FunnelConfig[]>([])
   const [loading, setLoading] = useState(true)
-  const [deleting, setDeleting] = useState<string | null>(null)
 
   useEffect(() => {
     loadFunnels()
@@ -20,21 +19,6 @@ export default function AdminDashboard() {
     setLoading(false)
   }
 
-  const handleDelete = async (funnelId: string, funnelName: string) => {
-    if (!confirm(`Are you sure you want to delete "${funnelName}"? This cannot be undone.`)) {
-      return
-    }
-
-    setDeleting(funnelId)
-    const success = await deleteFunnel(funnelId)
-    setDeleting(null)
-
-    if (success) {
-      setFunnels(funnels.filter((f) => f.id !== funnelId))
-    } else {
-      alert('Failed to delete funnel')
-    }
-  }
 
   return (
     <div className="max-w-6xl mx-auto p-8">
@@ -42,7 +26,7 @@ export default function AdminDashboard() {
         <h1 className="text-4xl font-bold text-gray-900">Quiz Funnels</h1>
         <Link
           href="/admin/funnels/new"
-          className="px-8 py-4 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 text-lg"
+          className="btn-sm-orange"
         >
           + New Funnel
         </Link>
@@ -65,16 +49,16 @@ export default function AdminDashboard() {
           <table className="w-full">
             <thead className="bg-gray-100">
               <tr>
-                <th className="text-left px-6 py-4 font-bold text-gray-900">
+                <th className="text-left px-6 py-2 font-bold text-gray-900 text-xs">
                   Name
                 </th>
-                <th className="text-left px-6 py-4 font-bold text-gray-900">
+                <th className="text-left px-6 py-2 font-bold text-gray-900 text-xs">
                   Slug
                 </th>
-                <th className="text-left px-6 py-4 font-bold text-gray-900">
+                <th className="text-left px-6 py-2 font-bold text-gray-900 text-xs">
                   Status
                 </th>
-                <th className="text-left px-6 py-4 font-bold text-gray-900">
+                <th className="text-right px-6 py-2 font-bold text-gray-900 text-xs">
                   Actions
                 </th>
               </tr>
@@ -82,11 +66,11 @@ export default function AdminDashboard() {
             <tbody>
               {funnels.map((funnel) => (
                 <tr key={funnel.id} className="border-b border-gray-200 hover:bg-gray-50">
-                  <td className="px-6 py-5 text-gray-900">{funnel.name}</td>
-                  <td className="px-6 py-5 text-gray-600">/{funnel.slug}</td>
-                  <td className="px-6 py-5">
+                  <td className="px-6 py-2 text-gray-900 text-xs">{funnel.name}</td>
+                  <td className="px-6 py-2 text-gray-600 text-xs">/{funnel.slug}</td>
+                  <td className="px-6 py-2">
                     <span
-                      className={`px-3 py-1 rounded-full text-sm font-bold ${
+                      className={`px-2 py-1 rounded-full text-xs font-bold ${
                         funnel.active
                           ? 'bg-green-100 text-green-800'
                           : 'bg-gray-100 text-gray-800'
@@ -95,26 +79,19 @@ export default function AdminDashboard() {
                       {funnel.active ? 'Active' : 'Inactive'}
                     </span>
                   </td>
-                  <td className="px-6 py-5 space-x-4">
+                  <td className="px-6 py-2 flex gap-2 justify-end items-center">
                     <Link
                       href={`/admin/funnels/${funnel.id}`}
-                      className="text-orange-500 font-bold hover:underline"
+                      className="btn-sm-orange"
                     >
                       Edit
                     </Link>
                     <Link
                       href={`/admin/funnels/${funnel.id}/submissions`}
-                      className="text-blue-500 font-bold hover:underline"
+                      className="btn-sm-blue"
                     >
                       Submissions
                     </Link>
-                    <button
-                      onClick={() => handleDelete(funnel.id, funnel.name)}
-                      disabled={deleting === funnel.id}
-                      className="text-red-500 font-bold hover:underline disabled:opacity-50"
-                    >
-                      {deleting === funnel.id ? 'Deleting...' : 'Delete'}
-                    </button>
                   </td>
                 </tr>
               ))}

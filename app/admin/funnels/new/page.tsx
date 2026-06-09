@@ -39,26 +39,29 @@ export default function NewFunnelPage() {
     }
 
     try {
+      const stepId = `step${Date.now()}`
+      const resultsId = `step${Date.now() + 1}`
+
       const config: FunnelConfig = {
         id: '', // Will be set by Supabase
         slug: formData.slug,
         name: formData.name,
-        startStepId: 'step1',
+        startStepId: stepId,
         steps: [
           {
-            id: 'step1',
+            id: stepId,
             type: 'single_select',
-            question: 'Question 1?',
+            question: 'Single Select',
             answers: [
-              { label: 'Option 1', value: 'option1', next: 'results' },
-              { label: 'Option 2', value: 'option2', next: 'results' },
+              { label: 'Option 1', value: 'option1', next: resultsId },
+              { label: 'Option 2', value: 'option2', next: resultsId },
             ],
-            next: 'results',
+            next: resultsId,
           },
           {
-            id: 'results',
+            id: resultsId,
             type: 'results_page',
-            question: 'Thank you!',
+            question: 'Results Page',
           },
         ],
         theme: {
@@ -149,17 +152,17 @@ export default function NewFunnelPage() {
           </p>
         </div>
 
-        <div className="flex gap-6 pt-10">
+        <div className="flex gap-6 pt-10 justify-center">
           <button
             type="submit"
             disabled={loading}
-            className="flex-1 py-4 px-8 bg-orange-500 text-white font-bold rounded-lg hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-lg"
+            className="btn-orange"
           >
             {loading ? 'Creating...' : 'Create Funnel'}
           </button>
           <Link
             href="/admin"
-            className="flex-1 py-4 px-8 bg-gray-200 text-gray-900 font-bold rounded-lg hover:bg-gray-300 transition-colors text-center text-lg"
+            className="btn-gray text-center"
           >
             Cancel
           </Link>

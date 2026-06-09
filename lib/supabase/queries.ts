@@ -74,10 +74,20 @@ export async function createSubmission(
   name?: string,
   address?: Record<string, unknown>
 ): Promise<string | null> {
+  console.log('[createSubmission] Starting submission insert', {
+    funnelId,
+    sessionId,
+    answersKeys: Object.keys(answers),
+    leadScore,
+    email,
+    phone,
+    name,
+  })
+
   const supabase = getSupabaseClient()
-  const { data, error } = await supabase
-    .from('submissions')
-    .insert({
+
+  try {
+    const insertPayload = {
       funnel_id: funnelId,
       session_id: sessionId,
       answers,
@@ -88,16 +98,83 @@ export async function createSubmission(
       address,
       completed: true,
       submitted_at: new Date().toISOString(),
-    })
-    .select('id')
-    .single()
+    }
 
-  if (error) {
-    console.error('Failed to create submission:', error)
+    console.log('[createSubmission] Insert payload:', insertPayload)
+
+    const { data, error } = await supabase
+      .from('submissions')
+      .insert(insertPayload)
+      .select('id')
+      .single()
+
+    if (error) {
+      console.error('[createSubmission] Database error:', {
+        message: error.message,
+        code: error.code,
+        details: error.details,
+        hint: error.hint,
+      })
+      return null
+    }
+
+    console.log('[createSubmission] Successfully inserted submission:', {
+      id: data?.id,
+      returnedData: data,
+    })
+    return data?.id || null
+  } catch (err) {
+    console.error('[createSubmission] Unexpected error:', err)
     return null
   }
+}
 
-  return data?.id || null
+export async function updateSubmission(
+  submissionId: string,
+  answers: Record<string, unknown>,
+  leadScore: number,
+  email?: string,
+  phone?: string,
+  name?: string,
+  address?: Record<string, unknown>,
+  completed?: boolean
+): Promise<boolean> {
+  console.log('[updateSubmission] Updating submission', {
+    submissionId,
+    answersKeys: Object.keys(answers),
+    leadScore,
+  })
+
+  const supabase = getSupabaseClient()
+
+  try {
+    const updatePayload = {
+      answers,
+      lead_score: leadScore,
+      email,
+      phone,
+      name,
+      address,
+      ...(completed !== undefined && { completed }),
+      submitted_at: new Date().toISOString(),
+    }
+
+    const { error } = await supabase
+      .from('submissions')
+      .update(updatePayload)
+      .eq('id', submissionId)
+
+    if (error) {
+      console.error('[updateSubmission] Database error:', error)
+      return false
+    }
+
+    console.log('[updateSubmission] Successfully updated submission:', submissionId)
+    return true
+  } catch (err) {
+    console.error('[updateSubmission] Unexpected error:', err)
+    return false
+  }
 }
 
 export async function getSubmissions(

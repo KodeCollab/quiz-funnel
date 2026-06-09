@@ -28,27 +28,29 @@ export function EmailStep({
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white p-6 antialiased" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-      <div className="w-full max-w-2xl">
-        <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 text-center leading-tight select-none" style={{ WebkitFontSmoothing: 'antialiased' }}>
+    <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+      <div className="w-full max-w-full">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
           {question}
         </h1>
         {description && (
-          <p className="text-xl text-gray-600 text-center mb-12 leading-relaxed" style={{ WebkitFontSmoothing: 'antialiased' }}>{description}</p>
+          <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>{description}</p>
         )}
 
-        <div className="space-y-6">
-          <div>
+        <div className="flex flex-col items-center justify-center mt-8 md:mt-12">
+          <div className="input-container-block">
             <input
+              id="email-input"
+              name="email"
               type="email"
+              autoComplete="email"
               value={email}
               onChange={(e) => {
                 setEmail(e.target.value)
                 setError('')
               }}
               placeholder="you@example.com"
-              className="w-full px-6 py-4 text-lg border border-gray-200 rounded-xl focus:outline-none focus:border-orange-500 shadow-sm"
-              style={{ WebkitFontSmoothing: 'antialiased', borderColor: 'transparent' }}
+              style={{ WebkitFontSmoothing: 'antialiased' }}
             />
             {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
           </div>
@@ -56,7 +58,7 @@ export function EmailStep({
           <button
             onClick={handleSubmit}
             disabled={!email}
-            className="w-full py-4 px-6 bg-orange-500 text-white font-semibold text-lg rounded-xl hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors shadow-sm hover:shadow-md border-transparent"
+            className="btn-orange-block"
             style={{ WebkitFontSmoothing: 'antialiased' }}
           >
             Continue
