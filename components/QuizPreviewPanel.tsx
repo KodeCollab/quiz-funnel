@@ -101,13 +101,13 @@ export default function QuizPreviewPanel({
         case 'multiple_select':
         case 'multi_select':
           return (
-            <div className="flex flex-col items-center justify-center min-h-96 bg-white p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
               <div className="w-full max-w-full">
-                <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                   {currentStep.question}
                 </h1>
                 {currentStep.description && (
-                  <p className="text-xl text-gray-600 text-center mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                  <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
                     {currentStep.description}
                   </p>
                 )}
@@ -267,6 +267,39 @@ export default function QuizPreviewPanel({
                     <input
                       type="text"
                       placeholder="Enter information"
+                      style={{ WebkitFontSmoothing: 'antialiased' }}
+                    />
+                  </div>
+
+                  <button
+                    onClick={handleNextStep}
+                    className="btn-orange-block"
+                  >
+                    Continue
+                  </button>
+                </div>
+              </div>
+            </div>
+          )
+        case 'text_input':
+        case 'textarea':
+          return (
+            <div className="flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full max-w-full">
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                  {currentStep.question}
+                </h1>
+                {currentStep.description && (
+                  <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                    {currentStep.description}
+                  </p>
+                )}
+
+                <div className="flex flex-col items-center justify-center mt-8 md:mt-12">
+                  <div className="input-container-block">
+                    <input
+                      type="text"
+                      placeholder={currentStep.placeholder || 'Enter your answer...'}
                       style={{ WebkitFontSmoothing: 'antialiased' }}
                     />
                   </div>

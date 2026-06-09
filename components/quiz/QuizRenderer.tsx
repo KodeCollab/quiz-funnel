@@ -11,6 +11,7 @@ import { QuestionStep } from './QuestionStep'
 import { ProgressBar } from './ProgressBar'
 import { SingleSelectStep } from './steps/SingleSelectStep'
 import { MultipleSelectStep } from './steps/MultipleSelectStep'
+import { TextInputStep } from './steps/TextInputStep'
 import { EmailStep } from './steps/EmailStep'
 import { NameStep } from './steps/NameStep'
 import { PhoneStep } from './steps/PhoneStep'
@@ -220,6 +221,119 @@ export function QuizRenderer({
     setCurrentStep(funnel.startStepId)
   }
 
+  const renderStepContent = () => {
+    switch (currentStep.type) {
+      case 'single_select':
+        return (
+          <SingleSelectStep
+            question={currentStep.question}
+            description={currentStep.description}
+            answers={currentStep.answers || []}
+            selected={answers[currentStepId] as string}
+            onSelect={handleStepSubmit}
+          />
+        )
+
+      case 'multiple_select':
+      case 'multi_select':
+        return (
+          <MultipleSelectStep
+            question={currentStep.question}
+            description={currentStep.description}
+            answers={currentStep.answers || []}
+            selected={(answers[currentStepId] as string)?.split(',').filter(Boolean) || []}
+            onSubmit={handleStepSubmit}
+          />
+        )
+
+      case 'text_input':
+      case 'textarea':
+        return (
+          <TextInputStep
+            question={currentStep.question}
+            description={currentStep.description}
+            value={answers[currentStepId] as string}
+            placeholder={currentStep.placeholder}
+            onSubmit={handleStepSubmit}
+          />
+        )
+
+      case 'email_capture':
+        return (
+          <EmailStep
+            question={currentStep.question}
+            description={currentStep.description}
+            value={answers[currentStepId] as string}
+            onSubmit={handleStepSubmit}
+          />
+        )
+
+      case 'name_capture':
+        return (
+          <NameStep
+            question={currentStep.question}
+            description={currentStep.description}
+            value={answers[currentStepId] as string}
+            onSubmit={handleStepSubmit}
+          />
+        )
+
+      case 'phone_capture':
+        return (
+          <PhoneStep
+            question={currentStep.question}
+            description={currentStep.description}
+            value={answers[currentStepId] as string}
+            onSubmit={handleStepSubmit}
+          />
+        )
+
+      case 'address_capture':
+      case 'zipcode_capture':
+      case 'city_capture':
+      case 'housenumber_capture':
+      case 'country_capture':
+        return (
+          <AddressStep
+            type={currentStep.type as any}
+            question={currentStep.question}
+            description={currentStep.description}
+            value={answers[currentStepId] as string}
+            onSubmit={handleStepSubmit}
+          />
+        )
+
+      case 'loading_screen':
+        return (
+          <LoadingStep
+            question={currentStep.question}
+            onComplete={handleLoadingComplete}
+            duration={(currentStep as any).duration || 2000}
+          />
+        )
+
+      case 'results_page':
+        return (
+          <ResultsStep
+            question={currentStep.question}
+            description={currentStep.description}
+            ctaText={currentStep.ctaText}
+            ctaLink={currentStep.ctaLink}
+          />
+        )
+
+      default:
+        return (
+          <div className="flex items-center justify-center min-h-96 bg-white">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold text-gray-900">Unknown step type</h1>
+              <p className="text-gray-600 mt-2">{currentStep.type}</p>
+            </div>
+          </div>
+        )
+    }
+  }
+
   return (
     <div className="w-full flex flex-col overflow-x-hidden">
       <ProgressBar current={progress} total={visibleSteps.length} />
@@ -227,80 +341,8 @@ export function QuizRenderer({
       <div className="flex-1 overflow-x-hidden">
         <AnimatePresence mode="wait">
           <QuestionStep key={currentStepId} stepKey={currentStepId}>
-          {currentStep.type === 'single_select' && (
-            <SingleSelectStep
-              question={currentStep.question}
-              description={currentStep.description}
-              answers={currentStep.answers || []}
-              selected={answers[currentStepId] as string}
-              onSelect={handleStepSubmit}
-            />
-          )}
-
-          {(currentStep.type === 'multiple_select' || currentStep.type === 'multi_select') && (
-            <MultipleSelectStep
-              question={currentStep.question}
-              description={currentStep.description}
-              answers={currentStep.answers || []}
-              selected={(answers[currentStepId] as string)?.split(',').filter(Boolean) || []}
-              onSubmit={handleStepSubmit}
-            />
-          )}
-
-          {currentStep.type === 'email_capture' && (
-            <EmailStep
-              question={currentStep.question}
-              description={currentStep.description}
-              value={answers[currentStepId] as string}
-              onSubmit={handleStepSubmit}
-            />
-          )}
-
-          {currentStep.type === 'name_capture' && (
-            <NameStep
-              question={currentStep.question}
-              description={currentStep.description}
-              value={answers[currentStepId] as string}
-              onSubmit={handleStepSubmit}
-            />
-          )}
-
-          {currentStep.type === 'phone_capture' && (
-            <PhoneStep
-              question={currentStep.question}
-              description={currentStep.description}
-              value={answers[currentStepId] as string}
-              onSubmit={handleStepSubmit}
-            />
-          )}
-
-          {['address_capture', 'zipcode_capture', 'city_capture', 'housenumber_capture', 'country_capture'].includes(currentStep.type) && (
-            <AddressStep
-              type={currentStep.type as any}
-              question={currentStep.question}
-              description={currentStep.description}
-              value={answers[currentStepId] as string}
-              onSubmit={handleStepSubmit}
-            />
-          )}
-
-          {currentStep.type === 'loading_screen' && (
-            <LoadingStep
-              question={currentStep.question}
-              onComplete={handleLoadingComplete}
-              duration={(currentStep as any).duration || 2000}
-            />
-          )}
-
-          {currentStep.type === 'results_page' && (
-            <ResultsStep
-              question={currentStep.question}
-              description={currentStep.description}
-              ctaText={currentStep.ctaText}
-              ctaLink={currentStep.ctaLink}
-            />
-          )}
-        </QuestionStep>
+            {renderStepContent()}
+          </QuestionStep>
         </AnimatePresence>
       </div>
     </div>
