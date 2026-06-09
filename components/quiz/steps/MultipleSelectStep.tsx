@@ -52,7 +52,7 @@ export function MultipleSelectStep({
         <button
           onClick={() => onSubmit(selections.join(','))}
           disabled={selections.length === 0}
-          className="btn-orange-block"
+          className="btn-orange-block mt-8"
         >
           Continue
         </button>

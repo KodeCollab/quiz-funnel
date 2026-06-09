@@ -143,7 +143,7 @@ export default function QuizPreviewPanel({
                 <button
                   onClick={handleNextStep}
                   disabled={selectedAnswer.length === 0}
-                  className="btn-orange-block"
+                  className="btn-orange-block mt-8"
                 >
                   Continue
                 </button>
