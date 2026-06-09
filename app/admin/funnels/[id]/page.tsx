@@ -148,8 +148,15 @@ export default function FunnelEditorPage() {
     const [draggedStep] = newSteps.splice(draggedIndex, 1)
     newSteps.splice(targetIdx, 0, draggedStep)
 
+    // Update startStepId if the first step changed
+    let newStartStepId = funnel.startStepId
+    const firstStep = newSteps[0]
+    if (firstStep && !['results_page', 'loading_screen'].includes(firstStep.type)) {
+      newStartStepId = firstStep.id
+    }
+
     setSaving(true)
-    const updatedFunnel = { ...funnel, steps: newSteps }
+    const updatedFunnel = { ...funnel, steps: newSteps, startStepId: newStartStepId }
     const success = await updateFunnel(funnel.id, updatedFunnel)
     if (success) {
       setFunnel(updatedFunnel)
