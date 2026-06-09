@@ -78,44 +78,26 @@ export default function FunnelEditorPage() {
     if (!funnel) return
     setSaving(true)
 
-    const newStepId = `step${Date.now()}`
+    const newStepId = `step${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
     const resultsStep = funnel.steps.find((s) => s.type === 'results_page')
-    const resultsStepId = resultsStep?.id
 
     const newStep: QuizStep = {
       id: newStepId,
       type: 'single_select',
       question: 'Single Select',
       answers: [
-        { label: 'Option 1', value: 'option1', next: resultsStepId || '' },
-        { label: 'Option 2', value: 'option2', next: resultsStepId || '' },
+        { label: 'Option 1', value: 'option1' },
+        { label: 'Option 2', value: 'option2' },
       ],
+      // Don't set next - allow auto-flow to next step in sequence
     }
 
-    // Find the step that currently points to results and update it
-    const updatedSteps = funnel.steps.map((step) => {
-      // Update answer options that point to results
-      if (step.answers) {
-        return {
-          ...step,
-          answers: step.answers.map((a) => ({
-            ...a,
-            next: a.next === resultsStepId ? newStepId : a.next,
-          })),
-        }
-      }
-      // Update next field if it points to results
-      if (step.next === resultsStepId) {
-        return { ...step, next: newStepId }
-      }
-      return step
-    })
-
     // Insert new step before results page
-    const insertIndex = resultsStepId
-      ? updatedSteps.findIndex((s) => s.id === resultsStepId)
-      : updatedSteps.length
+    const insertIndex = resultsStep
+      ? funnel.steps.findIndex((s) => s.id === resultsStep.id)
+      : funnel.steps.length
 
+    const updatedSteps = [...funnel.steps]
     updatedSteps.splice(insertIndex, 0, newStep)
 
     const updatedFunnel = {
@@ -148,15 +130,39 @@ export default function FunnelEditorPage() {
     const [draggedStep] = newSteps.splice(draggedIndex, 1)
     newSteps.splice(targetIdx, 0, draggedStep)
 
+    // After reordering, set explicit next values to maintain flow
+    // This ensures steps render in the correct order regardless of array position
+    const stepsWithExplicitNext = newSteps.map((step, idx) => {
+      // Skip results page and loading screens - they don't need next
+      if (['results_page', 'loading_screen'].includes(step.type)) {
+        const { next, ...stepWithoutNext } = step
+        return stepWithoutNext
+      }
+
+      // For all other steps, find the next non-results, non-loading-screen step
+      const nextNonSystemStep = newSteps
+        .slice(idx + 1)
+        .find((s) => !['results_page', 'loading_screen'].includes(s.type))
+
+      // If there's a next step, set it. Otherwise, point to results or leave undefined
+      if (nextNonSystemStep) {
+        return { ...step, next: nextNonSystemStep.id }
+      } else {
+        // Point to results page if it exists
+        const resultsPage = newSteps.find((s) => s.type === 'results_page')
+        return { ...step, next: resultsPage?.id || undefined }
+      }
+    })
+
     // Update startStepId if the first step changed
     let newStartStepId = funnel.startStepId
-    const firstStep = newSteps[0]
+    const firstStep = stepsWithExplicitNext[0]
     if (firstStep && !['results_page', 'loading_screen'].includes(firstStep.type)) {
       newStartStepId = firstStep.id
     }
 
     setSaving(true)
-    const updatedFunnel = { ...funnel, steps: newSteps, startStepId: newStartStepId }
+    const updatedFunnel = { ...funnel, steps: stepsWithExplicitNext, startStepId: newStartStepId }
     const success = await updateFunnel(funnel.id, updatedFunnel)
     if (success) {
       setFunnel(updatedFunnel)

@@ -113,37 +113,42 @@ export default function QuizPreviewPanel({
                 )}
 
                 <div className="space-y-4 mt-8 md:mt-12 px-2">
-                  {currentStep.answers?.map((answer) => (
-                    <button
-                      key={answer.value}
-                      onClick={() => {
-                        if (selectedAnswer.includes(answer.value)) {
-                          setSelectedAnswer(
-                            selectedAnswer
-                              .split(',')
-                              .filter((v) => v !== answer.value)
-                              .join(',')
-                          )
-                        } else {
-                          setSelectedAnswer(
-                            selectedAnswer
-                              ? `${selectedAnswer},${answer.value}`
-                              : answer.value
-                          )
-                        }
-                      }}
-                      className="btn-orange-block flex items-center justify-center gap-3"
-                    >
-                      <span className="text-xl">{selectedAnswer.includes(answer.value) ? '☑' : '☐'}</span>
-                      {answer.label}
-                    </button>
-                  ))}
+                  {currentStep.answers?.map((answer) => {
+                    const isSelected = selectedAnswer.includes(answer.value)
+                    return (
+                      <button
+                        key={answer.value}
+                        onClick={() => {
+                          if (isSelected) {
+                            setSelectedAnswer(
+                              selectedAnswer
+                                .split(',')
+                                .filter((v) => v !== answer.value)
+                                .join(',')
+                            )
+                          } else {
+                            setSelectedAnswer(
+                              selectedAnswer
+                                ? `${selectedAnswer},${answer.value}`
+                                : answer.value
+                            )
+                          }
+                        }}
+                        className={`flex items-center justify-center gap-3 ${
+                          isSelected ? 'btn-orange-block' : 'btn-gray-block'
+                        }`}
+                      >
+                        <span className="text-xl">{isSelected ? '☑' : '☐'}</span>
+                        {answer.label}
+                      </button>
+                    )
+                  })}
                 </div>
 
                 <button
                   onClick={handleNextStep}
                   disabled={selectedAnswer.length === 0}
-                  className="btn-orange-block mt-8"
+                  className="btn-orange-block mt-12"
                 >
                   Continue
                 </button>

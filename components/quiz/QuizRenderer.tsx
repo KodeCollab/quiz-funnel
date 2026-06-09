@@ -68,6 +68,8 @@ export function QuizRenderer({
     ? currentStepId
     : funnel.steps[0]?.id || ''
   const currentStep = funnel.steps.find((s) => s.id === effectiveStepId)
+
+  console.log('[QuizRenderer] currentStepId:', currentStepId, 'effectiveStepId:', effectiveStepId, 'available steps:', funnel.steps.map(s => `${s.id}(${s.type})`), 'currentStep:', currentStep?.question)
   const visibleSteps = funnel.steps.filter(
     (s) => s.type !== 'loading_screen'
   )

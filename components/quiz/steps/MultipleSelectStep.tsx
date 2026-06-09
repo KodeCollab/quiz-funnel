@@ -37,22 +37,27 @@ export function MultipleSelectStep({
         )}
 
         <div className="space-y-4 mt-8 md:mt-12 px-2">
-          {answers.map((answer) => (
-            <button
-              key={answer.value}
-              onClick={() => toggleSelection(answer.value)}
-              className="btn-orange-block flex items-center justify-center gap-3"
-            >
-              <span className="text-xl">{selections.includes(answer.value) ? '☑' : '☐'}</span>
-              {answer.label}
-            </button>
-          ))}
+          {answers.map((answer) => {
+            const isSelected = selections.includes(answer.value)
+            return (
+              <button
+                key={answer.value}
+                onClick={() => toggleSelection(answer.value)}
+                className={`flex items-center justify-center gap-3 ${
+                  isSelected ? 'btn-orange-block' : 'btn-gray-block'
+                }`}
+              >
+                <span className="text-xl">{isSelected ? '☑' : '☐'}</span>
+                {answer.label}
+              </button>
+            )
+          })}
         </div>
 
         <button
           onClick={() => onSubmit(selections.join(','))}
           disabled={selections.length === 0}
-          className="btn-orange-block mt-8"
+          className="btn-orange-block mt-12"
         >
           Continue
         </button>

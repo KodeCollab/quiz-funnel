@@ -31,23 +31,10 @@ export function resolveNextStep(
   allAnswers: Record<string, unknown>,
   allSteps?: QuizStep[]
 ): string {
-  // First, check if this is a single select step with answer-level branching
-  // (skip this for multiple_select since the answer is comma-separated)
-  if (step.type === 'single_select' && step.answers) {
-    const selectedAnswer = step.answers.find((a) => a.value === answer)
-    if (selectedAnswer && selectedAnswer.next) {
-      // Validate that the next step exists
-      if (allSteps && allSteps.find((s) => s.id === selectedAnswer.next)) {
-        console.log(`[resolveNextStep] Answer-level next: ${selectedAnswer.next}`)
-        return selectedAnswer.next
-      } else if (selectedAnswer.next) {
-        // Next step doesn't exist, warn and fall through to auto-flow
-        console.warn(`[resolveNextStep] Answer-level next step "${selectedAnswer.next}" not found, auto-flowing`)
-      }
-    }
-  }
+  // Skip answer-level branching entirely - use step-level routing for clarity
+  // This prevents ID mismatch issues when steps are created/reordered
 
-  // Otherwise, check step-level next field
+  // Check step-level next field
   if (!step.next) {
     // Auto-flow to next step in sequence
     if (allSteps) {
@@ -95,20 +82,32 @@ export function resolveNextStep(
   }
 
   // Conditional branching
-  for (const branch of step.next) {
-    if (evaluateCondition(branch.condition, answer, allAnswers)) {
-      console.log(`[resolveNextStep] Conditional branch matched: ${branch.next}`)
-      return branch.next
+  if (Array.isArray(step.next)) {
+    for (const branch of step.next) {
+      if (evaluateCondition(branch.condition, answer, allAnswers)) {
+        console.log(`[resolveNextStep] Conditional branch matched: ${branch.next}`)
+        return branch.next
+      }
+    }
+
+    // No condition matched - auto-flow to next step in sequence
+    if (allSteps) {
+      const currentIndex = allSteps.findIndex((s) => s.id === step.id)
+      if (currentIndex !== -1 && currentIndex < allSteps.length - 1) {
+        const nextStep = allSteps[currentIndex + 1]
+        console.log(`[resolveNextStep] No condition matched, auto-flowing from ${step.id} to ${nextStep.id}`)
+        return nextStep.id
+      }
+      // End of quiz - look for results page
+      const resultsStep = allSteps.find((s) => s.type === 'results_page')
+      if (resultsStep) {
+        console.log(`[resolveNextStep] End of quiz, returning results page: ${resultsStep.id}`)
+        return resultsStep.id
+      }
     }
   }
 
-  // Fallback - return last step in allSteps if available
-  if (allSteps && allSteps.length > 0) {
-    const lastStep = allSteps[allSteps.length - 1]
-    console.log(`[resolveNextStep] No condition matched, returning last step: ${lastStep.id}`)
-    return lastStep.id
-  }
-
+  // Fallback - return current step
   console.log(`[resolveNextStep] No valid next step found, staying on current step: ${step.id}`)
   return step.id
 }
