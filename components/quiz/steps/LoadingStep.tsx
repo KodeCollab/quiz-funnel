@@ -19,9 +19,9 @@ export function LoadingStep({
   }, [onComplete, duration])
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white p-4 md:p-6 antialiased" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+    <div className="flex flex-col items-center justify-center w-full h-full px-4 md:px-6 antialiased" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
       <div className="w-full max-w-xl text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-8 md:mb-16 leading-tight select-none" style={{ WebkitFontSmoothing: 'antialiased' }}>
+        <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4 md:mb-8 leading-tight select-none" style={{ WebkitFontSmoothing: 'antialiased' }}>
           {question}
         </h1>
 
