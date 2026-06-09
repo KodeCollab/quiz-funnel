@@ -149,7 +149,7 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
                 </label>
                 <button
                   onClick={handleAddAnswer}
-                  className="text-sm px-3 py-1 bg-orange-500 text-white rounded hover:bg-orange-600"
+                  className="text-sm px-3 py-1 bg-orange-500 text-white rounded hover:bg-orange-600 mt-3 mb-3"
                 >
                   + Add Answer
                 </button>
@@ -188,7 +188,7 @@ export default function StepEditor({ step, onSave, onClose }: StepEditorProps) {
 
           {/* Button (for results page) */}
           {formData.type === 'results_page' && (
-            <div className="space-y-6 p-4 border border-gray-200 rounded-lg bg-gray-50">
+            <div className="space-y-6 px-4 py-8">
               <h3 className="font-bold text-gray-900">Button (Optional)</h3>
               <div>
                 <label className="block text-sm font-bold text-gray-900 mt-3 mb-3">

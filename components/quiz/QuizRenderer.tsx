@@ -61,8 +61,10 @@ export function QuizRenderer({
     }
   }, [funnel.id, funnel.steps])
 
-  // Get current step - default to first step if empty
-  const effectiveStepId = currentStepId || funnel.steps[0]?.id || ''
+  // Get current step - validate step exists in current funnel, default to first step if not
+  const effectiveStepId = (currentStepId && funnel.steps.some((s) => s.id === currentStepId))
+    ? currentStepId
+    : funnel.steps[0]?.id || ''
   const currentStep = funnel.steps.find((s) => s.id === effectiveStepId)
   const visibleSteps = funnel.steps.filter(
     (s) => s.type !== 'loading_screen'

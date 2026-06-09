@@ -319,7 +319,7 @@ export default function FunnelEditorPage() {
             <button
               onClick={handleAddStep}
               disabled={saving}
-              className="btn-outline-orange mt-8 py-4 px-8 text-lg"
+              className="btn-outline-orange mt-8 mb-8 py-4 px-8 text-lg"
             >
               + Add Step
             </button>

@@ -30,20 +30,23 @@ export default function QuizPreviewPanel({
   const reset = useQuizStore((state) => state.reset)
   const [selectedAnswer, setSelectedAnswer] = useState<string>('')
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
+  const [autoPreviewStep, setAutoPreviewStep] = useState<QuizStep | null>(funnel.steps[0] || null)
 
   useEffect(() => {
     reset()
     setCurrentStepIndex(0)
+    setAutoPreviewStep(funnel.steps[0] || null)
   }, [funnel.steps.length, reset])
 
   useEffect(() => {
-    if (previewingStep) {
-      const stepIndex = funnel.steps.findIndex(s => s.id === previewingStep.id)
+    const step = previewingStep || autoPreviewStep
+    if (step) {
+      const stepIndex = funnel.steps.findIndex(s => s.id === step.id)
       if (stepIndex !== -1) {
         setCurrentStepIndex(stepIndex)
       }
     }
-  }, [previewingStep, funnel.steps])
+  }, [previewingStep, autoPreviewStep, funnel.steps])
 
   const handleNextStep = () => {
     if (currentStepIndex < funnel.steps.length - 1) {
@@ -57,7 +60,9 @@ export default function QuizPreviewPanel({
     setTimeout(handleNextStep, 300)
   }
 
-  if (previewingStep) {
+  const effectivePreviewStep = previewingStep || autoPreviewStep
+
+  if (effectivePreviewStep) {
     const currentStep = funnel.steps[currentStepIndex]
     const totalSteps = funnel.steps.length
     const progress = ((currentStepIndex + 1) / totalSteps) * 100
@@ -305,13 +310,13 @@ export default function QuizPreviewPanel({
         {/* Mobile Frame */}
         <div className="bg-white rounded-b-lg shadow-xl overflow-hidden overflow-x-hidden">
           {/* Phone notch */}
-          <div className="bg-black h-7 flex items-center justify-between px-4 text-white text-xs">
+          <div className="bg-black h-7 flex items-center justify-between px-6 py-2 text-white text-xs">
             <span></span>
             <span>9:41</span>
           </div>
 
           {/* Phone content */}
-          <div className="bg-white max-h-[600px] overflow-y-auto overflow-x-hidden w-full">
+          <div className="bg-white max-h-[600px] overflow-y-auto overflow-hidden w-full px-4">
             {renderStep()}
           </div>
 

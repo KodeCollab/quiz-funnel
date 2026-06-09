@@ -67,7 +67,15 @@ export default function AdminDashboard() {
               {funnels.map((funnel) => (
                 <tr key={funnel.id} className="border-b border-gray-200 hover:bg-gray-50">
                   <td className="px-6 py-2 text-gray-900 text-xs">{funnel.name}</td>
-                  <td className="px-6 py-2 text-gray-600 text-xs">/{funnel.slug}</td>
+                  <td className="px-6 py-2 text-gray-600 text-xs">
+                    <Link
+                      href={`/quiz/${funnel.slug}`}
+                      target="_blank"
+                      className="text-orange-500 hover:underline font-bold"
+                    >
+                      /{funnel.slug}
+                    </Link>
+                  </td>
                   <td className="px-6 py-2">
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-bold ${

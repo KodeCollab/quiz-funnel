@@ -35,8 +35,14 @@ export function resolveNextStep(
   if ((step.type === 'single_select' || step.type === 'multiple_select') && step.answers) {
     const selectedAnswer = step.answers.find((a) => a.value === answer)
     if (selectedAnswer && selectedAnswer.next) {
-      console.log(`[resolveNextStep] Answer-level next: ${selectedAnswer.next}`)
-      return selectedAnswer.next
+      // Validate that the next step exists
+      if (allSteps && allSteps.find((s) => s.id === selectedAnswer.next)) {
+        console.log(`[resolveNextStep] Answer-level next: ${selectedAnswer.next}`)
+        return selectedAnswer.next
+      } else if (selectedAnswer.next) {
+        // Next step doesn't exist, warn and fall through to auto-flow
+        console.warn(`[resolveNextStep] Answer-level next step "${selectedAnswer.next}" not found, auto-flowing`)
+      }
     }
   }
 
