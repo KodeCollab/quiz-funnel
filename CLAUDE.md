@@ -285,8 +285,36 @@ See **[.claude/development.md](./.claude/development.md)** for debugging tips.
 - **Vercel:** https://vercel.com
 - **Next.js Docs:** https://nextjs.org/docs
 
+## Recent Improvements (2026-06-10)
+
+✅ **Layout & Mobile Responsiveness**
+- Complete viewport optimization — no scrolling on mobile/tablet
+- Premium spacing system applied throughout
+- Typography refinements for better readability
+
+✅ **Navigation & UX**
+- Back button added to quiz navigation
+- Improved step routing and validation
+- Smart auto-flow when step ordering changes
+
+✅ **Step Types & Features**
+- New `text_input` step type
+- Enhanced `multi_select` handling
+- Configurable loading screen duration
+
+✅ **Admin Panel**
+- Multi-step editing approach
+- Improved form styling and drag animations
+- Live quiz preview inline with editor
+- Better step deletion and reordering UX
+
+✅ **Quiz Preview**
+- Fixed mobile preview rendering
+- Improved step initialization
+- Better debug logging
+
 ---
 
-**Last Updated:** 2026-06-09  
-**Status:** Production-ready MVP  
+**Last Updated:** 2026-06-10  
+**Status:** Production MVP — actively maintained  
 **Built with:** Claude Code + Next.js 15 + TypeScript

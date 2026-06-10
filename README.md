@@ -267,5 +267,6 @@ Private project for WaveTen Solar UK.
 
 ---
 
-**Last Updated:** 2026-06-09  
-**Built with:** Claude Code + Next.js 15 + TypeScript
+**Last Updated:** 2026-06-10  
+**Status:** Production MVP — actively maintained  
+**Built with:** Claude Code + Next.js 15 + TypeScript + Supabase

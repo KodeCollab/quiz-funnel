@@ -252,10 +252,10 @@ export function QuizRenderer({
               </div>
             </div>
             {history.length > 1 && (
-              <div className="px-4 lg:px-12 pb-6">
+              <div className="px-4 lg:px-12 pb-6 flex justify-start">
                 <button
                   onClick={goBack}
-                  className="text-orange-500 hover:underline text-sm font-bold"
+                  className="text-sm md:text-base text-gray-600 text-center"
                 >
                   ← Back
                 </button>
@@ -285,10 +285,10 @@ export function QuizRenderer({
               </div>
             </div>
             {history.length > 1 && (
-              <div className="px-4 lg:px-12 pb-6">
+              <div className="px-4 lg:px-12 pb-6 flex justify-start">
                 <button
                   onClick={goBack}
-                  className="text-orange-500 hover:underline text-sm font-bold"
+                  className="text-sm md:text-base text-gray-600 text-center"
                 >
                   ← Back
                 </button>
@@ -318,10 +318,10 @@ export function QuizRenderer({
               </div>
             </div>
             {history.length > 1 && (
-              <div className="px-4 lg:px-12 pb-6">
+              <div className="px-4 lg:px-12 pb-6 flex justify-start">
                 <button
                   onClick={goBack}
-                  className="text-orange-500 hover:underline text-sm font-bold"
+                  className="text-sm md:text-base text-gray-600 text-center"
                 >
                   ← Back
                 </button>
@@ -349,10 +349,10 @@ export function QuizRenderer({
               </div>
             </div>
             {history.length > 1 && (
-              <div className="px-4 lg:px-12 pb-6">
+              <div className="px-4 lg:px-12 pb-6 flex justify-start">
                 <button
                   onClick={goBack}
-                  className="text-orange-500 hover:underline text-sm font-bold"
+                  className="text-sm md:text-base text-gray-600 text-center"
                 >
                   ← Back
                 </button>
@@ -380,10 +380,10 @@ export function QuizRenderer({
               </div>
             </div>
             {history.length > 1 && (
-              <div className="px-4 lg:px-12 pb-6">
+              <div className="px-4 lg:px-12 pb-6 flex justify-start">
                 <button
                   onClick={goBack}
-                  className="text-orange-500 hover:underline text-sm font-bold"
+                  className="text-sm md:text-base text-gray-600 text-center"
                 >
                   ← Back
                 </button>
@@ -411,10 +411,10 @@ export function QuizRenderer({
               </div>
             </div>
             {history.length > 1 && (
-              <div className="px-4 lg:px-12 pb-6">
+              <div className="px-4 lg:px-12 pb-6 flex justify-start">
                 <button
                   onClick={goBack}
-                  className="text-orange-500 hover:underline text-sm font-bold"
+                  className="text-sm md:text-base text-gray-600 text-center"
                 >
                   ← Back
                 </button>
@@ -447,10 +447,10 @@ export function QuizRenderer({
               </div>
             </div>
             {history.length > 1 && (
-              <div className="px-4 lg:px-12 pb-6">
+              <div className="px-4 lg:px-12 pb-6 flex justify-start">
                 <button
                   onClick={goBack}
-                  className="text-orange-500 hover:underline text-sm font-bold"
+                  className="text-sm md:text-base text-gray-600 text-center"
                 >
                   ← Back
                 </button>
@@ -487,16 +487,6 @@ export function QuizRenderer({
                 />
               </div>
             </div>
-            {history.length > 1 && (
-              <div className="px-4 lg:px-12 pb-6">
-                <button
-                  onClick={goBack}
-                  className="text-orange-500 hover:underline text-sm font-bold"
-                >
-                  ← Back
-                </button>
-              </div>
-            )}
           </div>
         )
 

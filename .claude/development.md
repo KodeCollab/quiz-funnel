@@ -538,4 +538,29 @@ If you need to modify the schema:
 
 ---
 
-**Last Updated:** 2026-06-09
+## Recent Changes (2026-06-10)
+
+### Layout & Mobile
+- Complete viewport fit — removed scrolling on mobile devices
+- Premium spacing system applied to all components
+- Typography improvements for readability
+
+### Navigation
+- Back button implementation added to `QuizRenderer`
+- Step routing validation improved
+- Auto-flow when quiz steps are reordered
+
+### New Features
+- `text_input` step type implementation
+- Enhanced `multi_select` handling
+- Configurable loading screen duration
+
+### Admin Dashboard
+- Multi-step form approach for funnel editing
+- Live inline quiz preview
+- Improved drag-and-drop animations
+- Better UX for step deletion and reordering
+
+---
+
+**Last Updated:** 2026-06-10

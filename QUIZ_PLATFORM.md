@@ -252,6 +252,30 @@ npm run start
 - Safari 14+
 - Mobile browsers (iOS 14+, Android 90+)
 
+## Recent Updates (2026-06-10)
+
+✅ **Layout & Responsiveness**
+- Complete mobile viewport optimization
+- Premium spacing system implemented
+- No scrolling on mobile/tablet devices
+- Improved typography
+
+✅ **Navigation**
+- Back button support
+- Better step routing and validation
+- Auto-flow when steps are reordered
+
+✅ **New Step Type**
+- `text_input` step for short text capture
+- Enhanced `multi_select` handling
+- Configurable loading screen duration
+
+✅ **Admin Dashboard**
+- Multi-step editing interface
+- Inline live preview
+- Better drag-and-drop animations
+- Improved delete/reorder UX
+
 ## Future Features
 
 - [ ] A/B testing framework
@@ -292,3 +316,9 @@ Private project for WaveTen Solar UK.
 ## Support
 
 For questions or issues, check the admin dashboard or database logs.
+
+---
+
+**Last Updated:** 2026-06-10  
+**Version:** 1.0.0 (Production MVP)  
+**Maintained by:** Claude Code + WaveTen Team

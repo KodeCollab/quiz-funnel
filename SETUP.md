@@ -266,4 +266,12 @@ We'll add this to the API next.
 
 For more details, see [CLAUDE.md](./CLAUDE.md) (developer guide) and [QUIZ_PLATFORM.md](./QUIZ_PLATFORM.md) (features).
 
-**Last Updated:** 2026-06-09
+**Last Updated:** 2026-06-10
+
+## Recent Improvements
+
+✅ **Mobile-First Layout** — Complete viewport optimization ensures no scrolling on mobile/tablet
+✅ **Back Button** — Users can navigate backwards through quiz steps
+✅ **Text Input Support** — New `text_input` step type for flexible text capture
+✅ **Admin Panel UX** — Multi-step editing with live preview and better drag-and-drop
+✅ **Responsive Typography** — Improved readability with premium spacing system

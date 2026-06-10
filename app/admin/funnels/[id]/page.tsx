@@ -289,40 +289,39 @@ export default function FunnelEditorPage() {
 
                   {/* Step info */}
                   <div className="flex-1">
-                    <div className="text-sm text-gray-500 mb-2">Step {idx + 1}</div>
-                    <h3 className="font-bold text-gray-900 mb-3 text-lg">
-                      {step.question}
-                    </h3>
-                    <p className="text-sm text-gray-600">
-                      Type:{' '}
-                      <span className="font-mono bg-gray-100 px-2 py-1 rounded">
+                    <div className="flex justify-between items-center mb-3">
+                      <div className="text-sm text-gray-500">Step {idx + 1}</div>
+                      <span className="font-mono bg-gray-100 px-2 py-1 rounded text-sm text-gray-600">
                         {step.type}
                       </span>
-                    </p>
-                  </div>
+                    </div>
+                    <h3 className="font-bold text-gray-900 mb-4 text-lg text-left">
+                      {step.question}
+                    </h3>
 
-                  {/* Action buttons */}
-                  <div className="flex flex-col md:flex-row gap-2">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setEditingStep(step)
-                      }}
-                      disabled={saving}
-                      className="flex-1 min-w-[160px] btn-text-orange"
-                    >
-                      Edit
-                    </button>
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleDeleteStep(step.id)
-                      }}
-                      disabled={saving || funnel.steps.length <= 1}
-                      className="flex-1 min-w-[160px] btn-text-red"
-                    >
-                      Delete
-                    </button>
+                    {/* Action buttons */}
+                    <div className="flex gap-2 justify-start">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setEditingStep(step)
+                        }}
+                        disabled={saving}
+                        className="btn-text-orange"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDeleteStep(step.id)
+                        }}
+                        disabled={saving || funnel.steps.length <= 1}
+                        className="btn-text-red"
+                      >
+                        Delete
+                      </button>
+                    </div>
                   </div>
 
                 </div>

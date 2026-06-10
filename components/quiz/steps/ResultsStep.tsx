@@ -16,8 +16,12 @@ export function ResultsStep({
   ctaLink = '/',
 }: ResultsStepProps) {
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-2xl text-center" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-      <div className="my-4 md:my-6">
+    <div className="flex flex-col items-center justify-center w-full max-w-2xl text-center my-4 md:my-6" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+      <h1 className="text-3xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight" style={{ WebkitFontSmoothing: 'antialiased' }}>
+        {question}
+      </h1>
+
+      <div className="my-8 md:my-12">
         <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-green-100">
           <svg
             className="w-8 h-8 md:w-10 md:h-10 text-green-600 select-none"
@@ -34,10 +38,6 @@ export function ResultsStep({
           </svg>
         </div>
       </div>
-
-      <h1 className="text-3xl font-bold text-gray-900 mb-4 md:mb-6 leading-tight" style={{ WebkitFontSmoothing: 'antialiased' }}>
-        {question}
-      </h1>
 
       {description && (
         <p className="text-sm md:text-base text-gray-600 mb-6 md:mb-8 leading-relaxed" style={{ WebkitFontSmoothing: 'antialiased' }}>{description}</p>

@@ -27,7 +27,7 @@ export function MultipleSelectStep({
   }
 
   return (
-    <div className="flex flex-col items-center justify-center w-full max-w-2xl" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+    <div className="flex flex-col items-center justify-center w-full max-w-2xl" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }} data-step-content>
       <h1 className="text-3xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight" style={{ WebkitFontSmoothing: 'antialiased' }}>
         {question}
       </h1>
@@ -54,7 +54,7 @@ export function MultipleSelectStep({
         <button
           onClick={() => onSubmit(selections.join(','))}
           disabled={selections.length === 0}
-          className="btn-orange-block"
+          className="btn-orange-block mt-12 md:mt-16"
         >
           Continue
         </button>
