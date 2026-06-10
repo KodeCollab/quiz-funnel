@@ -226,29 +226,41 @@ export function QuizRenderer({
   }
 
   const renderStepContent = () => {
-    const stepWrapperClasses = "relative w-full h-full flex flex-col items-center justify-center bg-white px-4 lg:px-12 py-12 antialiased overflow-hidden"
+    const stepWrapperClasses = "relative w-full h-full flex flex-col items-center justify-center bg-white antialiased overflow-hidden"
 
-    const BackButton = () => history.length > 1 ? (
-      <button
-        onClick={goBack}
-        className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
-      >
-        ← Back
-      </button>
-    ) : null
+    const visibleIndex = visibleSteps.findIndex((s) => s.id === currentStepId)
+    const questionNumber = visibleIndex >= 0 ? visibleIndex + 1 : visibleSteps.length
 
     switch (currentStep.type) {
       case 'single_select':
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-            <SingleSelectStep
-              question={currentStep.question}
-              description={currentStep.description}
-              answers={currentStep.answers || []}
-              selected={answers[currentStepId] as string}
-              onSelect={handleStepSubmit}
-            />
-            <BackButton />
+            <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+              <div className="text-center mb-6">
+                <p className="text-sm md:text-base font-semibold text-orange-500">
+                  Question {questionNumber} of {visibleSteps.length}
+                </p>
+              </div>
+              <div className="flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                <SingleSelectStep
+                  question={currentStep.question}
+                  description={currentStep.description}
+                  answers={currentStep.answers || []}
+                  selected={answers[currentStepId] as string}
+                  onSelect={handleStepSubmit}
+                />
+              </div>
+            </div>
+            {history.length > 1 && (
+              <div className="px-4 lg:px-12 pb-6">
+                <button
+                  onClick={goBack}
+                  className="text-orange-500 hover:underline text-sm font-bold"
+                >
+                  ← Back
+                </button>
+              </div>
+            )}
           </div>
         )
 
@@ -256,14 +268,32 @@ export function QuizRenderer({
       case 'multi_select':
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-            <MultipleSelectStep
-              question={currentStep.question}
-              description={currentStep.description}
-              answers={currentStep.answers || []}
-              selected={(answers[currentStepId] as string)?.split(',').filter(Boolean) || []}
-              onSubmit={handleStepSubmit}
-            />
-            <BackButton />
+            <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+              <div className="text-center mb-6">
+                <p className="text-sm md:text-base font-semibold text-orange-500">
+                  Question {questionNumber} of {visibleSteps.length}
+                </p>
+              </div>
+              <div className="flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                <MultipleSelectStep
+                  question={currentStep.question}
+                  description={currentStep.description}
+                  answers={currentStep.answers || []}
+                  selected={(answers[currentStepId] as string)?.split(',').filter(Boolean) || []}
+                  onSubmit={handleStepSubmit}
+                />
+              </div>
+            </div>
+            {history.length > 1 && (
+              <div className="px-4 lg:px-12 pb-6">
+                <button
+                  onClick={goBack}
+                  className="text-orange-500 hover:underline text-sm font-bold"
+                >
+                  ← Back
+                </button>
+              </div>
+            )}
           </div>
         )
 
@@ -271,53 +301,125 @@ export function QuizRenderer({
       case 'textarea':
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-            <TextInputStep
-              question={currentStep.question}
-              description={currentStep.description}
-              value={answers[currentStepId] as string}
-              placeholder={currentStep.placeholder}
-              onSubmit={handleStepSubmit}
-            />
-            <BackButton />
+            <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+              <div className="text-center mb-6">
+                <p className="text-sm md:text-base font-semibold text-orange-500">
+                  Question {questionNumber} of {visibleSteps.length}
+                </p>
+              </div>
+              <div className="flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                <TextInputStep
+                  question={currentStep.question}
+                  description={currentStep.description}
+                  value={answers[currentStepId] as string}
+                  placeholder={currentStep.placeholder}
+                  onSubmit={handleStepSubmit}
+                />
+              </div>
+            </div>
+            {history.length > 1 && (
+              <div className="px-4 lg:px-12 pb-6">
+                <button
+                  onClick={goBack}
+                  className="text-orange-500 hover:underline text-sm font-bold"
+                >
+                  ← Back
+                </button>
+              </div>
+            )}
           </div>
         )
 
       case 'email_capture':
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-            <EmailStep
-              question={currentStep.question}
-              description={currentStep.description}
-              value={answers[currentStepId] as string}
-              onSubmit={handleStepSubmit}
-            />
-            <BackButton />
+            <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+              <div className="text-center mb-6">
+                <p className="text-sm md:text-base font-semibold text-orange-500">
+                  Question {questionNumber} of {visibleSteps.length}
+                </p>
+              </div>
+              <div className="flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                <EmailStep
+                  question={currentStep.question}
+                  description={currentStep.description}
+                  value={answers[currentStepId] as string}
+                  onSubmit={handleStepSubmit}
+                />
+              </div>
+            </div>
+            {history.length > 1 && (
+              <div className="px-4 lg:px-12 pb-6">
+                <button
+                  onClick={goBack}
+                  className="text-orange-500 hover:underline text-sm font-bold"
+                >
+                  ← Back
+                </button>
+              </div>
+            )}
           </div>
         )
 
       case 'name_capture':
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-            <NameStep
-              question={currentStep.question}
-              description={currentStep.description}
-              value={answers[currentStepId] as string}
-              onSubmit={handleStepSubmit}
-            />
-            <BackButton />
+            <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+              <div className="text-center mb-6">
+                <p className="text-sm md:text-base font-semibold text-orange-500">
+                  Question {questionNumber} of {visibleSteps.length}
+                </p>
+              </div>
+              <div className="flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                <NameStep
+                  question={currentStep.question}
+                  description={currentStep.description}
+                  value={answers[currentStepId] as string}
+                  onSubmit={handleStepSubmit}
+                />
+              </div>
+            </div>
+            {history.length > 1 && (
+              <div className="px-4 lg:px-12 pb-6">
+                <button
+                  onClick={goBack}
+                  className="text-orange-500 hover:underline text-sm font-bold"
+                >
+                  ← Back
+                </button>
+              </div>
+            )}
           </div>
         )
 
       case 'phone_capture':
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-            <PhoneStep
-              question={currentStep.question}
-              description={currentStep.description}
-              value={answers[currentStepId] as string}
-              onSubmit={handleStepSubmit}
-            />
-            <BackButton />
+            <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+              <div className="text-center mb-6">
+                <p className="text-sm md:text-base font-semibold text-orange-500">
+                  Question {questionNumber} of {visibleSteps.length}
+                </p>
+              </div>
+              <div className="flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                <PhoneStep
+                  question={currentStep.question}
+                  description={currentStep.description}
+                  value={answers[currentStepId] as string}
+                  onSubmit={handleStepSubmit}
+                />
+              </div>
+            </div>
+            {history.length > 1 && (
+              <div className="px-4 lg:px-12 pb-6">
+                <button
+                  onClick={goBack}
+                  className="text-orange-500 hover:underline text-sm font-bold"
+                >
+                  ← Back
+                </button>
+              </div>
+            )}
           </div>
         )
 
@@ -328,38 +430,73 @@ export function QuizRenderer({
       case 'country_capture':
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-            <AddressStep
-              type={currentStep.type as any}
-              question={currentStep.question}
-              description={currentStep.description}
-              value={answers[currentStepId] as string}
-              onSubmit={handleStepSubmit}
-            />
-            <BackButton />
+            <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+              <div className="text-center mb-6">
+                <p className="text-sm md:text-base font-semibold text-orange-500">
+                  Question {questionNumber} of {visibleSteps.length}
+                </p>
+              </div>
+              <div className="flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                <AddressStep
+                  type={currentStep.type as any}
+                  question={currentStep.question}
+                  description={currentStep.description}
+                  value={answers[currentStepId] as string}
+                  onSubmit={handleStepSubmit}
+                />
+              </div>
+            </div>
+            {history.length > 1 && (
+              <div className="px-4 lg:px-12 pb-6">
+                <button
+                  onClick={goBack}
+                  className="text-orange-500 hover:underline text-sm font-bold"
+                >
+                  ← Back
+                </button>
+              </div>
+            )}
           </div>
         )
 
       case 'loading_screen':
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-            <LoadingStep
-              question={currentStep.question}
-              onComplete={handleLoadingComplete}
-              duration={(currentStep as any).duration || 2000}
-            />
+            <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+              <div className="flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                <LoadingStep
+                  question={currentStep.question}
+                  onComplete={handleLoadingComplete}
+                  duration={(currentStep as any).duration || 2000}
+                />
+              </div>
+            </div>
           </div>
         )
 
       case 'results_page':
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-            <ResultsStep
-              question={currentStep.question}
-              description={currentStep.description}
-              ctaText={currentStep.ctaText}
-              ctaLink={currentStep.ctaLink}
-            />
-            <BackButton />
+            <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+              <div className="flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                <ResultsStep
+                  question={currentStep.question}
+                  description={currentStep.description}
+                  ctaText={currentStep.ctaText}
+                  ctaLink={currentStep.ctaLink}
+                />
+              </div>
+            </div>
+            {history.length > 1 && (
+              <div className="px-4 lg:px-12 pb-6">
+                <button
+                  onClick={goBack}
+                  className="text-orange-500 hover:underline text-sm font-bold"
+                >
+                  ← Back
+                </button>
+              </div>
+            )}
           </div>
         )
 

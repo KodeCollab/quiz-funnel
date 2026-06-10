@@ -74,226 +74,284 @@ export default function QuizPreviewPanel({
     const totalSteps = funnel.steps.length
     const progress = ((currentStepIndex + 1) / totalSteps) * 100
 
+    const visibleSteps = funnel.steps.filter(s => s.type !== 'loading_screen')
+    const visibleIndex = visibleSteps.findIndex(s => s.id === currentStep?.id)
+    const questionNumber = visibleIndex >= 0 ? visibleIndex + 1 : currentStepIndex + 1
+
     const renderStep = () => {
       if (!currentStep) return null
 
       switch (currentStep.type) {
         case 'single_select':
           return (
-            <div className="relative flex flex-col items-center justify-center h-full bg-white px-4 lg:px-12 py-12 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full max-w-full">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                  {currentStep.question}
-                </h1>
-                {currentStep.description && (
-                  <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                    {currentStep.description}
+            <div className="relative flex flex-col h-full bg-white antialiased overflow-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+                <div className="text-center mb-6 w-full">
+                  <p className="text-sm font-semibold text-orange-500">
+                    Question {questionNumber} of {visibleSteps.length}
                   </p>
-                )}
+                </div>
+                <div className="w-full max-w-2xl flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                  <div>
+                    <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center leading-tight" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                      {currentStep.question}
+                    </h1>
+                    {currentStep.description && (
+                      <p className="text-sm text-gray-600 text-center mb-6 leading-relaxed" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                        {currentStep.description}
+                      </p>
+                    )}
 
-                <div className="space-y-4 mt-8 md:mt-12 px-2">
-                  {currentStep.answers?.map((answer) => (
-                    <button
-                      key={answer.value}
-                      onClick={() => handleSelectAnswer(answer.value)}
-                      className="btn-orange-block"
-                    >
-                      {answer.label}
-                    </button>
-                  ))}
+                    <div className="space-y-3 w-full">
+                      {currentStep.answers?.map((answer) => (
+                        <button
+                          key={answer.value}
+                          onClick={() => handleSelectAnswer(answer.value)}
+                          className="btn-orange-block"
+                        >
+                          {answer.label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               </div>
               {currentStepIndex > 0 && (
-                <button
-                  onClick={handleBackStep}
-                  className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
-                >
-                  ← Back
-                </button>
+                <div className="px-4 lg:px-12 pb-6">
+                  <button
+                    onClick={handleBackStep}
+                    className="text-orange-500 hover:underline text-sm font-bold"
+                  >
+                    ← Back
+                  </button>
+                </div>
               )}
             </div>
           )
         case 'multiple_select':
         case 'multi_select':
           return (
-            <div className="relative flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full max-w-full">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                  {currentStep.question}
-                </h1>
-                {currentStep.description && (
-                  <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                    {currentStep.description}
+            <div className="relative flex flex-col h-full bg-white antialiased overflow-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+                <div className="text-center mb-6 w-full">
+                  <p className="text-sm font-semibold text-orange-500">
+                    Question {questionNumber} of {visibleSteps.length}
                   </p>
-                )}
-
-                <div className="space-y-4 mt-8 md:mt-12 px-2">
-                  {currentStep.answers?.map((answer) => {
-                    const isSelected = selectedAnswer.includes(answer.value)
-                    return (
-                      <button
-                        key={answer.value}
-                        onClick={() => {
-                          if (isSelected) {
-                            setSelectedAnswer(
-                              selectedAnswer
-                                .split(',')
-                                .filter((v) => v !== answer.value)
-                                .join(',')
-                            )
-                          } else {
-                            setSelectedAnswer(
-                              selectedAnswer
-                                ? `${selectedAnswer},${answer.value}`
-                                : answer.value
-                            )
-                          }
-                        }}
-                        className={`flex items-center justify-center gap-3 ${
-                          isSelected ? 'btn-orange-block' : 'btn-gray-block'
-                        }`}
-                      >
-                        <span className="text-xl">{isSelected ? '☑' : '☐'}</span>
-                        {answer.label}
-                      </button>
-                    )
-                  })}
                 </div>
+                <div className="w-full max-w-2xl flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                  <div className="w-full">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center leading-tight" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                      {currentStep.question}
+                    </h1>
+                    {currentStep.description && (
+                      <p className="text-sm text-gray-600 text-center mb-6 leading-relaxed" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                        {currentStep.description}
+                      </p>
+                    )}
 
-                <button
-                  onClick={handleNextStep}
-                  disabled={selectedAnswer.length === 0}
-                  className="btn-orange-block mt-12"
-                >
-                  Continue
-                </button>
+                    <div className="space-y-3">
+                      {currentStep.answers?.map((answer) => {
+                        const isSelected = selectedAnswer.includes(answer.value)
+                        return (
+                          <button
+                            key={answer.value}
+                            onClick={() => {
+                              if (isSelected) {
+                                setSelectedAnswer(
+                                  selectedAnswer
+                                    .split(',')
+                                    .filter((v) => v !== answer.value)
+                                    .join(',')
+                                )
+                              } else {
+                                setSelectedAnswer(
+                                  selectedAnswer
+                                    ? `${selectedAnswer},${answer.value}`
+                                    : answer.value
+                                )
+                              }
+                            }}
+                            className={`flex items-center justify-center gap-3 ${
+                              isSelected ? 'btn-orange-block' : 'btn-gray-block'
+                            }`}
+                          >
+                            <span className="text-xl">{isSelected ? '☑' : '☐'}</span>
+                            {answer.label}
+                          </button>
+                        )
+                      })}
+                      <button
+                        onClick={handleNextStep}
+                        disabled={selectedAnswer.length === 0}
+                        className="btn-orange-block"
+                      >
+                        Continue
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
               {currentStepIndex > 0 && (
-                <button
-                  onClick={handleBackStep}
-                  className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
-                >
-                  ← Back
-                </button>
+                <div className="px-4 lg:px-12 pb-6">
+                  <button
+                    onClick={handleBackStep}
+                    className="text-orange-500 hover:underline text-sm font-bold"
+                  >
+                    ← Back
+                  </button>
+                </div>
               )}
             </div>
           )
         case 'email_capture':
           return (
-            <div className="relative flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full max-w-full">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                  {currentStep.question}
-                </h1>
-                {currentStep.description && (
-                  <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                    {currentStep.description}
+            <div className="relative flex flex-col h-full bg-white antialiased overflow-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+                <div className="text-center mb-6 w-full">
+                  <p className="text-sm font-semibold text-orange-500">
+                    Question {questionNumber} of {visibleSteps.length}
                   </p>
-                )}
+                </div>
+                <div className="w-full max-w-2xl flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                  <div className="w-full">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center leading-tight" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                      {currentStep.question}
+                    </h1>
+                    {currentStep.description && (
+                      <p className="text-sm text-gray-600 text-center mb-6 leading-relaxed" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                        {currentStep.description}
+                      </p>
+                    )}
 
-                <div className="flex flex-col items-center justify-center mt-8 md:mt-12">
-                  <div className="input-container-block">
-                    <input
-                      type="email"
-                      placeholder="your@email.com"
-                      style={{ WebkitFontSmoothing: 'antialiased' }}
-                    />
+                    <div className="flex flex-col gap-4">
+                      <div className="input-container-block w-full">
+                        <input
+                          type="email"
+                          placeholder="your@email.com"
+                          style={{ WebkitFontSmoothing: 'antialiased' }}
+                        />
+                      </div>
+                      <button
+                        onClick={handleNextStep}
+                        className="btn-orange-block w-full"
+                      >
+                        Continue
+                      </button>
+                    </div>
                   </div>
-                  <button
-                    onClick={handleNextStep}
-                    className="btn-orange-block"
-                  >
-                    Continue
-                  </button>
                 </div>
               </div>
               {currentStepIndex > 0 && (
-                <button
-                  onClick={handleBackStep}
-                  className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
-                >
-                  ← Back
-                </button>
+                <div className="px-4 lg:px-12 pb-6">
+                  <button
+                    onClick={handleBackStep}
+                    className="text-orange-500 hover:underline text-sm font-bold"
+                  >
+                    ← Back
+                  </button>
+                </div>
               )}
             </div>
           )
         case 'name_capture':
           return (
-            <div className="relative flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full max-w-full">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                  {currentStep.question}
-                </h1>
-                {currentStep.description && (
-                  <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                    {currentStep.description}
+            <div className="relative flex flex-col h-full bg-white antialiased overflow-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+                <div className="text-center mb-6 w-full">
+                  <p className="text-sm font-semibold text-orange-500">
+                    Question {questionNumber} of {visibleSteps.length}
                   </p>
-                )}
+                </div>
+                <div className="w-full max-w-2xl flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                  <div className="w-full">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center leading-tight" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                      {currentStep.question}
+                    </h1>
+                    {currentStep.description && (
+                      <p className="text-sm text-gray-600 text-center mb-6 leading-relaxed" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                        {currentStep.description}
+                      </p>
+                    )}
 
-                <div className="flex flex-col items-center justify-center mt-8 md:mt-12">
-                  <div className="input-container-block">
-                    <input
-                      type="text"
-                      placeholder="Your full name"
-                      style={{ WebkitFontSmoothing: 'antialiased' }}
-                    />
+                    <div className="flex flex-col gap-4">
+                      <div className="input-container-block w-full">
+                        <input
+                          type="text"
+                          placeholder="Your full name"
+                          style={{ WebkitFontSmoothing: 'antialiased' }}
+                        />
+                      </div>
+
+                      <button
+                        onClick={handleNextStep}
+                        className="btn-orange-block w-full"
+                      >
+                        Continue
+                      </button>
+                    </div>
                   </div>
-
-                  <button
-                    onClick={handleNextStep}
-                    className="btn-orange-block"
-                  >
-                    Continue
-                  </button>
                 </div>
               </div>
               {currentStepIndex > 0 && (
-                <button
-                  onClick={handleBackStep}
-                  className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
-                >
-                  ← Back
-                </button>
+                <div className="px-4 lg:px-12 pb-6">
+                  <button
+                    onClick={handleBackStep}
+                    className="text-orange-500 hover:underline text-sm font-bold"
+                  >
+                    ← Back
+                  </button>
+                </div>
               )}
             </div>
           )
         case 'phone_capture':
           return (
-            <div className="relative flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full max-w-full">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                  {currentStep.question}
-                </h1>
-                {currentStep.description && (
-                  <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                    {currentStep.description}
+            <div className="relative flex flex-col h-full bg-white antialiased overflow-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+                <div className="text-center mb-6 w-full">
+                  <p className="text-sm font-semibold text-orange-500">
+                    Question {questionNumber} of {visibleSteps.length}
                   </p>
-                )}
+                </div>
+                <div className="w-full max-w-2xl flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                  <div className="w-full">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center leading-tight" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                      {currentStep.question}
+                    </h1>
+                    {currentStep.description && (
+                      <p className="text-sm text-gray-600 text-center mb-6 leading-relaxed" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                        {currentStep.description}
+                      </p>
+                    )}
 
-                <div className="flex flex-col items-center justify-center mt-8 md:mt-12">
-                  <div className="input-container-block">
-                    <input
-                      type="tel"
-                      placeholder="+44 123 456 7890"
-                      style={{ WebkitFontSmoothing: 'antialiased' }}
-                    />
+                    <div className="flex flex-col gap-4">
+                      <div className="input-container-block w-full">
+                        <input
+                          type="tel"
+                          placeholder="+44 123 456 7890"
+                          style={{ WebkitFontSmoothing: 'antialiased' }}
+                        />
+                      </div>
+
+                      <button
+                        onClick={handleNextStep}
+                        className="btn-orange-block w-full"
+                      >
+                        Continue
+                      </button>
+                    </div>
                   </div>
-
-                  <button
-                    onClick={handleNextStep}
-                    className="btn-orange-block"
-                  >
-                    Continue
-                  </button>
                 </div>
               </div>
               {currentStepIndex > 0 && (
-                <button
-                  onClick={handleBackStep}
-                  className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
-                >
-                  ← Back
-                </button>
+                <div className="px-4 lg:px-12 pb-6">
+                  <button
+                    onClick={handleBackStep}
+                    className="text-orange-500 hover:underline text-sm font-bold"
+                  >
+                    ← Back
+                  </button>
+                </div>
               )}
             </div>
           )
@@ -303,130 +361,160 @@ export default function QuizPreviewPanel({
         case 'housenumber_capture':
         case 'country_capture':
           return (
-            <div className="relative flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full max-w-full">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                  {currentStep.question}
-                </h1>
-                {currentStep.description && (
-                  <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                    {currentStep.description}
+            <div className="relative flex flex-col h-full bg-white antialiased overflow-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+                <div className="text-center mb-6 w-full">
+                  <p className="text-sm font-semibold text-orange-500">
+                    Question {questionNumber} of {visibleSteps.length}
                   </p>
-                )}
+                </div>
+                <div className="w-full max-w-2xl flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                  <div className="w-full">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center leading-tight" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                      {currentStep.question}
+                    </h1>
+                    {currentStep.description && (
+                      <p className="text-sm text-gray-600 text-center mb-6 leading-relaxed" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                        {currentStep.description}
+                      </p>
+                    )}
 
-                <div className="flex flex-col items-center justify-center mt-8 md:mt-12">
-                  <div className="input-container-block">
-                    <input
-                      type="text"
-                      placeholder="Enter information"
-                      style={{ WebkitFontSmoothing: 'antialiased' }}
-                    />
+                    <div className="flex flex-col gap-4">
+                      <div className="input-container-block w-full">
+                        <input
+                          type="text"
+                          placeholder="Enter information"
+                          style={{ WebkitFontSmoothing: 'antialiased' }}
+                        />
+                      </div>
+
+                      <button
+                        onClick={handleNextStep}
+                        className="btn-orange-block w-full"
+                      >
+                        Continue
+                      </button>
+                    </div>
                   </div>
-
-                  <button
-                    onClick={handleNextStep}
-                    className="btn-orange-block"
-                  >
-                    Continue
-                  </button>
                 </div>
               </div>
               {currentStepIndex > 0 && (
-                <button
-                  onClick={handleBackStep}
-                  className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
-                >
-                  ← Back
-                </button>
+                <div className="px-4 lg:px-12 pb-6">
+                  <button
+                    onClick={handleBackStep}
+                    className="text-orange-500 hover:underline text-sm font-bold"
+                  >
+                    ← Back
+                  </button>
+                </div>
               )}
             </div>
           )
         case 'text_input':
         case 'textarea':
           return (
-            <div className="relative flex flex-col items-center justify-center min-h-96 bg-white p-4 md:p-6 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full max-w-full">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 md:mb-6 text-center leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                  {currentStep.question}
-                </h1>
-                {currentStep.description && (
-                  <p className="text-base md:text-lg text-gray-600 text-center mb-8 md:mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                    {currentStep.description}
+            <div className="relative flex flex-col h-full bg-white antialiased overflow-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+                <div className="text-center mb-6 w-full">
+                  <p className="text-sm font-semibold text-orange-500">
+                    Question {questionNumber} of {visibleSteps.length}
                   </p>
-                )}
+                </div>
+                <div className="w-full max-w-2xl flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                  <div className="w-full">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center leading-tight" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                      {currentStep.question}
+                    </h1>
+                    {currentStep.description && (
+                      <p className="text-sm text-gray-600 text-center mb-6 leading-relaxed" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                        {currentStep.description}
+                      </p>
+                    )}
 
-                <div className="flex flex-col items-center justify-center mt-8 md:mt-12">
-                  <div className="input-container-block">
-                    <input
-                      type="text"
-                      placeholder={currentStep.placeholder || 'Enter your answer...'}
-                      style={{ WebkitFontSmoothing: 'antialiased' }}
-                    />
+                    <div className="flex flex-col gap-4">
+                      <div className="input-container-block w-full">
+                        <input
+                          type="text"
+                          placeholder={currentStep.placeholder || 'Enter your answer...'}
+                          style={{ WebkitFontSmoothing: 'antialiased' }}
+                        />
+                      </div>
+
+                      <button
+                        onClick={handleNextStep}
+                        className="btn-orange-block w-full"
+                      >
+                        Continue
+                      </button>
+                    </div>
                   </div>
-
-                  <button
-                    onClick={handleNextStep}
-                    className="btn-orange-block"
-                  >
-                    Continue
-                  </button>
                 </div>
               </div>
               {currentStepIndex > 0 && (
-                <button
-                  onClick={handleBackStep}
-                  className="absolute bottom-4 left-4 text-orange-500 hover:underline text-sm font-bold"
-                >
-                  ← Back
-                </button>
+                <div className="px-4 lg:px-12 pb-6">
+                  <button
+                    onClick={handleBackStep}
+                    className="text-orange-500 hover:underline text-sm font-bold"
+                  >
+                    ← Back
+                  </button>
+                </div>
               )}
             </div>
           )
         case 'loading_screen':
           return (
-            <div className="flex flex-col items-center justify-center min-h-[500px] bg-white p-4 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full text-center px-2">
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-16 leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                  {currentStep.question}
-                </h1>
+            <div className="relative flex flex-col h-full bg-white antialiased overflow-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+                <div className="w-full max-w-2xl flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                  <div className="text-center">
+                    <h1 className="text-3xl font-bold text-gray-900 mb-8 text-center leading-tight" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                      {currentStep.question}
+                    </h1>
 
-                <div className="flex justify-center items-center">
-                  <div className="w-20 h-20 border-4 border-gray-200 border-t-orange-500 rounded-full animate-spin" style={{ borderColor: 'transparent' }} />
+                    <div className="flex justify-center items-center">
+                      <div className="w-20 h-20 border-4 border-gray-200 border-t-orange-500 rounded-full animate-spin" style={{ borderColor: 'transparent' }} />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           )
         case 'results_page':
           return (
-            <div className="flex flex-col items-center justify-center min-h-[500px] bg-white p-4 antialiased overflow-x-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
-              <div className="w-full text-center px-2">
-                <div className="mb-12">
-                  <div className="inline-flex items-center justify-center w-24 h-24 rounded-full bg-green-100 mb-8">
-                    <svg
-                      className="w-12 h-12 text-green-600 select-none"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
+            <div className="relative flex flex-col h-full bg-white antialiased overflow-hidden" style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+              <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+                <div className="w-full max-w-2xl flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                  <div className="text-center">
+                    <div className="my-4 md:my-6">
+                      <div className="inline-flex items-center justify-center w-16 h-16 md:w-20 md:h-20 rounded-full bg-green-100">
+                        <svg
+                          className="w-8 h-8 md:w-10 md:h-10 text-green-600 select-none"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+
+                    <h1 className="text-3xl font-bold text-gray-900 mb-4 text-center leading-tight" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                      {currentStep.question}
+                    </h1>
+
+                    {currentStep.description && (
+                      <p className="text-sm text-gray-600 leading-relaxed" style={{ WebkitFontSmoothing: 'antialiased' }}>
+                        {currentStep.description}
+                      </p>
+                    )}
                   </div>
                 </div>
-
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight select-none px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                  {currentStep.question}
-                </h1>
-
-                {currentStep.description && (
-                  <p className="text-xl text-gray-600 mb-12 leading-relaxed px-2" style={{ WebkitFontSmoothing: 'antialiased' }}>
-                    {currentStep.description}
-                  </p>
-                )}
               </div>
             </div>
           )
