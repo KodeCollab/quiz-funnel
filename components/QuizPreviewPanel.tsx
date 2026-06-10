@@ -67,7 +67,7 @@ export default function QuizPreviewPanel({
             reset()
             const firstStep = funnel.steps.find(s => s.type !== 'loading_screen')
             if (firstStep) {
-              setCurrentStep(firstStep.id)
+              useQuizStore.setState({ currentStepId: firstStep.id, history: [firstStep.id] })
             }
           }}
           className="btn-sm-orange"
