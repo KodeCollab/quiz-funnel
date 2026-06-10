@@ -37,7 +37,7 @@ export function PhoneStep({
       )}
 
       <div className="flex flex-col items-center justify-center gap-4 w-full">
-        <div className="input-container-block w-full">
+        <div className="input-container-block">
           <input
             id="phone-input"
             name="phone"
@@ -57,7 +57,7 @@ export function PhoneStep({
         <button
           onClick={handleSubmit}
           disabled={!phone}
-          className="btn-orange-block w-full"
+          className="btn-orange-block"
           style={{ WebkitFontSmoothing: 'antialiased' }}
         >
           Continue

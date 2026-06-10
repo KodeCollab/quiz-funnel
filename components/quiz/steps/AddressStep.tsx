@@ -51,7 +51,7 @@ export function AddressStep({
       )}
 
       <div className="flex flex-col items-center justify-center gap-4 w-full">
-        <div className="input-container-block w-full">
+        <div className="input-container-block">
           <input
             id={`${type}-input`}
             name={labelByType[type].toLowerCase().replace(/\s+/g, '-')}
@@ -73,7 +73,7 @@ export function AddressStep({
         <button
           onClick={handleSubmit}
           disabled={!input.trim()}
-          className="btn-orange-block w-full"
+          className="btn-orange-block"
           style={{ WebkitFontSmoothing: 'antialiased' }}
         >
           Continue

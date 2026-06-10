@@ -24,6 +24,7 @@ const stepTypeLabels: Record<string, string> = {
   multiple_select: 'Multiple Select',
   loading_screen: 'Loading Screen',
   results_page: 'Results Page',
+  cta: 'Call To Action',
 }
 
 export default function StepEditor({ step, onSave, onClose, allSteps = [] }: StepEditorProps) {
@@ -104,6 +105,7 @@ export default function StepEditor({ step, onSave, onClose, allSteps = [] }: Ste
               <option value="housenumber_capture">House Number</option>
               <option value="country_capture">Country</option>
               <option value="text_input">Text Input</option>
+              <option value="cta">Call To Action</option>
               <option value="loading_screen">Loading Screen</option>
               <option value="results_page">Results Page</option>
             </select>
@@ -263,6 +265,137 @@ export default function StepEditor({ step, onSave, onClose, allSteps = [] }: Ste
                 className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
               />
               <p className="text-xs text-gray-500 mt-2">Default: 2000ms (2 seconds)</p>
+            </div>
+          )}
+
+          {/* CTA Step Configuration */}
+          {formData.type === 'cta' && (
+            <div className="space-y-6">
+              {/* Selected Fields */}
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mb-3">
+                  Input Fields
+                </label>
+                <div className="space-y-2">
+                  {(['name', 'email', 'phone'] as const).map((field) => (
+                    <label key={field} className="flex items-center gap-2 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={((formData as any).selectedFields || []).includes(field)}
+                        onChange={(e) => {
+                          const selectedFields = [...((formData as any).selectedFields || [])]
+                          if (e.target.checked) {
+                            selectedFields.push(field)
+                          } else {
+                            selectedFields.splice(selectedFields.indexOf(field), 1)
+                          }
+                          setFormData({ ...formData, selectedFields })
+                        }}
+                        className="w-4 h-4"
+                      />
+                      <span className="text-sm text-gray-700 capitalize">{field}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Checkbox Text */}
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mt-3 mb-3">
+                  Checkbox Text
+                </label>
+                <textarea
+                  value={(formData as any).checkboxText || 'I have read and agree to the {termsOfUse} and {privacyPolicy}'}
+                  onChange={(e) =>
+                    setFormData({ ...formData, checkboxText: e.target.value })
+                  }
+                  placeholder="Use {termsOfUse} and {privacyPolicy} as variable placeholders"
+                  rows={2}
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
+                />
+                <p className="text-xs text-gray-500 mt-2">Use {'{termsOfUse}'} and {'{privacyPolicy}'} as placeholders for links</p>
+              </div>
+
+              {/* Terms of Use URL */}
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mt-3 mb-3">
+                  Terms of Use URL
+                </label>
+                <input
+                  type="text"
+                  value={(formData as any).termsOfUseUrl || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, termsOfUseUrl: e.target.value })
+                  }
+                  placeholder="https://example.com/terms"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
+                />
+              </div>
+
+              {/* Privacy Policy URL */}
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mt-3 mb-3">
+                  Privacy Policy URL
+                </label>
+                <input
+                  type="text"
+                  value={(formData as any).privacyPolicyUrl || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, privacyPolicyUrl: e.target.value })
+                  }
+                  placeholder="https://example.com/privacy"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
+                />
+              </div>
+
+              {/* CTA Button Text */}
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mt-3 mb-3">
+                  Button Text
+                </label>
+                <input
+                  type="text"
+                  value={(formData as any).ctaText || 'Continue'}
+                  onChange={(e) =>
+                    setFormData({ ...formData, ctaText: e.target.value })
+                  }
+                  placeholder="Button text"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
+                />
+              </div>
+
+              {/* CTA Button Link */}
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mt-3 mb-3">
+                  Button Link (optional)
+                </label>
+                <input
+                  type="text"
+                  value={(formData as any).ctaLink || ''}
+                  onChange={(e) =>
+                    setFormData({ ...formData, ctaLink: e.target.value })
+                  }
+                  placeholder="Leave empty to submit form, or enter URL"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
+                />
+                <p className="text-xs text-gray-500 mt-2">If left empty, form will be submitted. Otherwise, link will open in new tab.</p>
+              </div>
+
+              {/* Warning Text */}
+              <div>
+                <label className="block text-sm font-bold text-gray-900 mt-3 mb-3">
+                  Warning Text (when checkbox not checked)
+                </label>
+                <input
+                  type="text"
+                  value={(formData as any).warningText || 'To continue, accept the T&C'}
+                  onChange={(e) =>
+                    setFormData({ ...formData, warningText: e.target.value })
+                  }
+                  placeholder="To continue, accept the T&C"
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:border-orange-500"
+                />
+              </div>
             </div>
           )}
 

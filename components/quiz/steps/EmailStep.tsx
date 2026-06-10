@@ -37,7 +37,7 @@ export function EmailStep({
       )}
 
       <div className="flex flex-col items-center justify-center gap-4 w-full">
-        <div className="input-container-block w-full">
+        <div className="input-container-block">
           <input
             id="email-input"
             name="email"
@@ -57,7 +57,7 @@ export function EmailStep({
         <button
           onClick={handleSubmit}
           disabled={!email}
-          className="btn-orange-block w-full"
+          className="btn-orange-block"
           style={{ WebkitFontSmoothing: 'antialiased' }}
         >
           Continue

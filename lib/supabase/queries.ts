@@ -177,6 +177,37 @@ export async function updateSubmission(
   }
 }
 
+export async function getSubmissionBySessionId(
+  funnelId: string,
+  sessionId: string
+): Promise<Submission | null> {
+  const supabase = getSupabaseClient()
+  const { data, error } = await supabase
+    .from('submissions')
+    .select('*')
+    .eq('funnel_id', funnelId)
+    .eq('session_id', sessionId)
+    .single()
+
+  if (error) return null
+
+  if (!data) return null
+
+  return {
+    id: data.id,
+    funnelId: data.funnel_id,
+    sessionId: data.session_id,
+    answers: data.answers,
+    leadScore: data.lead_score,
+    email: data.email,
+    phone: data.phone,
+    name: data.name,
+    address: data.address,
+    completed: data.completed,
+    submittedAt: data.submitted_at,
+  }
+}
+
 export async function getSubmissions(
   funnelId: string
 ): Promise<Submission[]> {

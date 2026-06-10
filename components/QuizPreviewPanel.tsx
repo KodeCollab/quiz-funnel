@@ -43,7 +43,7 @@ export default function QuizPreviewPanel({
       {/* Mobile Frame */}
       <div className="bg-white rounded-b-lg shadow-xl overflow-hidden overflow-x-hidden flex flex-col" style={{ width: '402px', height: '874px' }}>
         {/* Phone notch */}
-        <div className="bg-black h-7 flex items-center justify-between px-6 py-2 text-white text-xs flex-shrink-0">
+        <div className="bg-black h-7 flex items-center justify-between px-6 py-2 text-white text-xs flex-shrink-0 mr-4">
           <span></span>
           <span>9:41</span>
         </div>

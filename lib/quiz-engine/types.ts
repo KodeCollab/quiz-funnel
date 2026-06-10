@@ -20,6 +20,7 @@ export type StepType =
   | 'slider'
   | 'loading_screen'
   | 'results_page'
+  | 'cta'
 
 export interface Answer {
   label: string
@@ -54,6 +55,11 @@ export interface QuizStep {
   ctaText?: string
   ctaLink?: string
   duration?: number
+  selectedFields?: ('name' | 'email' | 'phone')[]
+  checkboxText?: string
+  termsOfUseUrl?: string
+  privacyPolicyUrl?: string
+  warningText?: string
 }
 
 export interface FunnelTheme {

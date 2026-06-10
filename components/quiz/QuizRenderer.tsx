@@ -16,6 +16,7 @@ import { EmailStep } from './steps/EmailStep'
 import { NameStep } from './steps/NameStep'
 import { PhoneStep } from './steps/PhoneStep'
 import { AddressStep } from './steps/AddressStep'
+import { CTAStep } from './steps/CTAStep'
 import { LoadingStep } from './steps/LoadingStep'
 import { ResultsStep } from './steps/ResultsStep'
 
@@ -73,7 +74,7 @@ export function QuizRenderer({
 
   console.log('[QuizRenderer] currentStepId:', currentStepId, 'effectiveStepId:', effectiveStepId, 'available steps:', funnel.steps.map(s => `${s.id}(${s.type})`), 'currentStep:', currentStep?.question)
   const visibleSteps = funnel.steps.filter(
-    (s) => s.type !== 'loading_screen'
+    (s) => s.type !== 'loading_screen' && s.type !== 'results_page'
   )
   const currentVisibleIndex = visibleSteps.findIndex((s) => s.id === currentStepId)
   // If current step is visible, show its progress; if hidden step, show full progress
@@ -407,6 +408,53 @@ export function QuizRenderer({
                   description={currentStep.description}
                   value={answers[currentStepId] as string}
                   onSubmit={handleStepSubmit}
+                />
+              </div>
+            </div>
+            {history.length > 1 && (
+              <div className="px-4 lg:px-12 pb-6 flex justify-start">
+                <button
+                  onClick={goBack}
+                  className="text-sm md:text-base text-gray-600 text-center"
+                >
+                  ← Back
+                </button>
+              </div>
+            )}
+          </div>
+        )
+
+      case 'cta':
+        return (
+          <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
+            <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
+              <div className="text-center mb-6 mt-8">
+                <p className="text-sm md:text-base font-semibold text-orange-500">
+                  Question {questionNumber} of {visibleSteps.length}
+                </p>
+              </div>
+              <div className="flex-1 overflow-y-auto flex items-center justify-center my-4 md:my-6">
+                <CTAStep
+                  question={currentStep.question}
+                  description={currentStep.description}
+                  selectedFields={(currentStep as any).selectedFields || []}
+                  checkboxText={(currentStep as any).checkboxText}
+                  termsOfUseUrl={(currentStep as any).termsOfUseUrl}
+                  privacyPolicyUrl={(currentStep as any).privacyPolicyUrl}
+                  ctaText={(currentStep as any).ctaText}
+                  ctaLink={(currentStep as any).ctaLink}
+                  warningText={(currentStep as any).warningText}
+                  values={
+                    Object.fromEntries(
+                      ((currentStep as any).selectedFields || []).map((field: string) => [field, answers[`${currentStepId}_${field}`] as string || ''])
+                    )
+                  }
+                  onSubmit={(data) => {
+                    const combinedData = Object.fromEntries(
+                      Object.entries(data).map(([key, value]) => [`${currentStepId}_${key}`, value])
+                    )
+                    handleStepSubmit(combinedData)
+                  }}
                 />
               </div>
             </div>

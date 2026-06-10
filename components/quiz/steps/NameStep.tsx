@@ -33,7 +33,7 @@ export function NameStep({
       )}
 
       <div className="flex flex-col items-center justify-center gap-4 w-full">
-        <div className="input-container-block w-full">
+        <div className="input-container-block">
           <input
             id="name-input"
             name="name"
@@ -49,7 +49,7 @@ export function NameStep({
         <button
           onClick={handleSubmit}
           disabled={!name.trim()}
-          className="btn-orange-block w-full"
+          className="btn-orange-block"
           style={{ WebkitFontSmoothing: 'antialiased' }}
         >
           Continue

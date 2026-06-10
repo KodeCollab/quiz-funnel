@@ -35,7 +35,7 @@ export function TextInputStep({
       )}
 
       <div className="flex flex-col items-center justify-center gap-4 w-full">
-        <div className="input-container-block w-full">
+        <div className="input-container-block">
           <input
             id="text-input"
             name="text"
@@ -55,7 +55,7 @@ export function TextInputStep({
         <button
           onClick={handleSubmit}
           disabled={!input.trim()}
-          className="btn-orange-block w-full"
+          className="btn-orange-block"
           style={{ WebkitFontSmoothing: 'antialiased' }}
         >
           Continue
