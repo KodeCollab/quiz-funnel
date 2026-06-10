@@ -236,7 +236,7 @@ export function QuizRenderer({
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
             <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
-              <div className="text-center mb-6">
+              <div className="text-center mb-6 mt-8">
                 <p className="text-sm md:text-base font-semibold text-orange-500">
                   Question {questionNumber} of {visibleSteps.length}
                 </p>
@@ -269,7 +269,7 @@ export function QuizRenderer({
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
             <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
-              <div className="text-center mb-6">
+              <div className="text-center mb-6 mt-8">
                 <p className="text-sm md:text-base font-semibold text-orange-500">
                   Question {questionNumber} of {visibleSteps.length}
                 </p>
@@ -302,7 +302,7 @@ export function QuizRenderer({
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
             <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
-              <div className="text-center mb-6">
+              <div className="text-center mb-6 mt-8">
                 <p className="text-sm md:text-base font-semibold text-orange-500">
                   Question {questionNumber} of {visibleSteps.length}
                 </p>
@@ -334,7 +334,7 @@ export function QuizRenderer({
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
             <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
-              <div className="text-center mb-6">
+              <div className="text-center mb-6 mt-8">
                 <p className="text-sm md:text-base font-semibold text-orange-500">
                   Question {questionNumber} of {visibleSteps.length}
                 </p>
@@ -365,7 +365,7 @@ export function QuizRenderer({
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
             <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
-              <div className="text-center mb-6">
+              <div className="text-center mb-6 mt-8">
                 <p className="text-sm md:text-base font-semibold text-orange-500">
                   Question {questionNumber} of {visibleSteps.length}
                 </p>
@@ -396,7 +396,7 @@ export function QuizRenderer({
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
             <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
-              <div className="text-center mb-6">
+              <div className="text-center mb-6 mt-8">
                 <p className="text-sm md:text-base font-semibold text-orange-500">
                   Question {questionNumber} of {visibleSteps.length}
                 </p>
@@ -431,7 +431,7 @@ export function QuizRenderer({
         return (
           <div className={stepWrapperClasses} style={{ fontFamily: 'ui-sans-serif,system-ui,sans-serif' }}>
             <div className="w-full h-full flex flex-col px-4 lg:px-12 pt-6">
-              <div className="text-center mb-6">
+              <div className="text-center mb-6 mt-8">
                 <p className="text-sm md:text-base font-semibold text-orange-500">
                   Question {questionNumber} of {visibleSteps.length}
                 </p>
