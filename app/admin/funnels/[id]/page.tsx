@@ -58,12 +58,36 @@ export default function FunnelEditorPage() {
 
     // If we deleted the start step, update to first remaining step
     if (stepId === funnel.startStepId && remainingSteps.length > 0) {
-      newStartStepId = remainingSteps[0].id
+      const firstNonSystem = remainingSteps.find((s) => !['results_page', 'loading_screen'].includes(s.type))
+      newStartStepId = firstNonSystem?.id || remainingSteps[0].id
     }
+
+    // Auto-assign next step in sequence after deletion
+    const stepsWithAutoNext = remainingSteps.map((step, idx) => {
+      // Skip results page and loading screens - they don't need next
+      if (['results_page', 'loading_screen'].includes(step.type)) {
+        const { next, ...stepWithoutNext } = step
+        return stepWithoutNext
+      }
+
+      // For all other steps, find the next non-results, non-loading-screen step
+      const nextNonSystemStep = remainingSteps
+        .slice(idx + 1)
+        .find((s) => !['results_page', 'loading_screen'].includes(s.type))
+
+      // If there's a next step, set it. Otherwise, point to results or leave undefined
+      if (nextNonSystemStep) {
+        return { ...step, next: nextNonSystemStep.id }
+      } else {
+        // Point to results page if it exists
+        const resultsPageStep = remainingSteps.find((s) => s.type === 'results_page')
+        return { ...step, next: resultsPageStep?.id || undefined }
+      }
+    })
 
     const updatedFunnel = {
       ...funnel,
-      steps: remainingSteps,
+      steps: stepsWithAutoNext,
       startStepId: newStartStepId,
     }
 
@@ -89,7 +113,6 @@ export default function FunnelEditorPage() {
         { label: 'Option 1', value: 'option1' },
         { label: 'Option 2', value: 'option2' },
       ],
-      // Don't set next - allow auto-flow to next step in sequence
     }
 
     // Insert new step before results page
@@ -100,9 +123,32 @@ export default function FunnelEditorPage() {
     const updatedSteps = [...funnel.steps]
     updatedSteps.splice(insertIndex, 0, newStep)
 
+    // Auto-assign next step in sequence
+    const stepsWithAutoNext = updatedSteps.map((step, idx) => {
+      // Skip results page and loading screens - they don't need next
+      if (['results_page', 'loading_screen'].includes(step.type)) {
+        const { next, ...stepWithoutNext } = step
+        return stepWithoutNext
+      }
+
+      // For all other steps, find the next non-results, non-loading-screen step
+      const nextNonSystemStep = updatedSteps
+        .slice(idx + 1)
+        .find((s) => !['results_page', 'loading_screen'].includes(s.type))
+
+      // If there's a next step, set it. Otherwise, point to results or leave undefined
+      if (nextNonSystemStep) {
+        return { ...step, next: nextNonSystemStep.id }
+      } else {
+        // Point to results page if it exists
+        const resultsPageStep = updatedSteps.find((s) => s.type === 'results_page')
+        return { ...step, next: resultsPageStep?.id || undefined }
+      }
+    })
+
     const updatedFunnel = {
       ...funnel,
-      steps: updatedSteps,
+      steps: stepsWithAutoNext,
     }
 
     const success = await updateFunnel(funnel.id, updatedFunnel)
