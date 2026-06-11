@@ -154,54 +154,59 @@ export function QuizRenderer({
     try {
       let currentSubmissionId = submissionId
 
-      if (!currentSubmissionId) {
-        // Create submission on first step
-        console.log('[handleStepSubmit] Creating submission in Supabase...')
-        currentSubmissionId = await createSubmission(
-          funnel.id,
-          sessionId,
-          finalAnswers,
-          leadScore,
-          email,
-          phone,
-          name
-        )
-        console.log('[handleStepSubmit] Submission created:', currentSubmissionId)
-        if (currentSubmissionId) {
-          setSubmissionId(currentSubmissionId)
+      // Skip submission in preview mode
+      if (!showPreviewControls) {
+        if (!currentSubmissionId) {
+          // Create submission on first step
+          console.log('[handleStepSubmit] Creating submission in Supabase...')
+          currentSubmissionId = await createSubmission(
+            funnel.id,
+            sessionId,
+            finalAnswers,
+            leadScore,
+            email,
+            phone,
+            name
+          )
+          console.log('[handleStepSubmit] Submission created:', currentSubmissionId)
+          if (currentSubmissionId) {
+            setSubmissionId(currentSubmissionId)
+          }
+        } else {
+          // Update existing submission
+          console.log('[handleStepSubmit] Updating submission:', currentSubmissionId)
+          await updateSubmission(
+            currentSubmissionId,
+            finalAnswers,
+            leadScore,
+            email,
+            phone,
+            name,
+            undefined,
+            isMovingToResults ? true : false
+          )
+          console.log('[handleStepSubmit] Submission updated')
+        }
+
+        // Push to Google Sheets
+        if (funnel.googleSheetsId && currentSubmissionId) {
+          console.log('[handleStepSubmit] Pushing to Google Sheets:', funnel.googleSheetsId)
+          await appendToGoogleSheet(funnel.googleSheetsId, {
+            id: currentSubmissionId,
+            funnelId: funnel.id,
+            sessionId,
+            answers: finalAnswers,
+            leadScore,
+            email,
+            phone,
+            name,
+            completed: isMovingToResults,
+            submittedAt: new Date().toISOString(),
+          })
+          console.log('[handleStepSubmit] Google Sheets update complete')
         }
       } else {
-        // Update existing submission
-        console.log('[handleStepSubmit] Updating submission:', currentSubmissionId)
-        await updateSubmission(
-          currentSubmissionId,
-          finalAnswers,
-          leadScore,
-          email,
-          phone,
-          name,
-          undefined,
-          isMovingToResults ? true : false
-        )
-        console.log('[handleStepSubmit] Submission updated')
-      }
-
-      // Push to Google Sheets
-      if (funnel.googleSheetsId && currentSubmissionId) {
-        console.log('[handleStepSubmit] Pushing to Google Sheets:', funnel.googleSheetsId)
-        await appendToGoogleSheet(funnel.googleSheetsId, {
-          id: currentSubmissionId,
-          funnelId: funnel.id,
-          sessionId,
-          answers: finalAnswers,
-          leadScore,
-          email,
-          phone,
-          name,
-          completed: isMovingToResults,
-          submittedAt: new Date().toISOString(),
-        })
-        console.log('[handleStepSubmit] Google Sheets update complete')
+        console.log('[handleStepSubmit] Preview mode - skipping submission')
       }
     } catch (error) {
       console.error('[handleStepSubmit] Error during submission:', error)
